@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css">
+    <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
+    <link rel="stylesheet" href="../css/styles.css">
+    <title>Landing</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"/>
+</head>
+<body>
+
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand link-light ms-5" href="#">Киносайт</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="mx-auto d-flex justify-content-between">
+                    <form class="form-inline">
+                        <input class="form-control flex-grow-1" type="search" placeholder="Название фильма"
+                               aria-label="Search">
+                    </form>
+                    <a href="filmList.html" type="submit" class="btn btn-outline-light my-sm-0" id="enterButton">Поиск</a>
+                </div>
+                <a id="enter" class="nav-link link-light me-3" href="login.html">Войти</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+
+<div class="container">
+    <aside class="sidebar">
+        <ul>
+            <h5  id="sidebar"></h5>
+            <h5><a href="filmList.html"
+                   class="link-offset-2 link-light link-underline link-underline-opacity-0">Главная</a>
+            </h5>
+            <h5><a href="filmList.html?id=POPULAR" class="link-offset-2 link-light link-underline link-underline-opacity-0">Популярные</a>
+            </h5>
+            <h5><a href="filmList.html?id=BEST" class="link-offset-2 link-light link-underline link-underline-opacity-0">Лучшие</a></h5>
+
+            <h5><a href="filmList.html?id=FAMILY" class="link-offset-2 link-light link-underline link-underline-opacity-0">Семейные</a>
+            </h5>
+            <h5><a href="filmList.html?id=DRAMA" class="link-offset-2 link-light link-underline link-underline-opacity-0">Драмы</a></h5>
+
+            <h5><a href="filmList.html?id=FIGHTING" class="link-offset-2 link-light link-underline link-underline-opacity-0">Боевики</a>
+            </h5>
+
+        </ul>
+    </aside>
+</div>
+
+<main class="bg-dark">
+    <div>
+        <div class="bg-dark">
+            <div class="carousel bg-dark"
+                 data-flickity='{ "wrapAround": true, "autoPlay": 3500, "pauseAutoPlayOnHover": false, "lazyLoad": 2, "initialIndex": 2, "pageDots": false }'>
+                <div class="carousel-cell bg-dark">
+                    <img class="carousel-cell-image"
+                         data-flickity-lazyload="https://images.wallpapershq.com/wallpapers/8204/wallpaper_8204_1284x2778.jpg"
+                         alt="Barbie"/>
+                </div>
+                <div class="carousel-cell bg-dark">
+                    <img class="carousel-cell-image"
+                         data-flickity-lazyload="https://images.wallpapershq.com/wallpapers/8249/wallpaper_8249_1284x2778.jpg"
+                         alt="Interstellar"/>
+                </div>
+                <div class="carousel-cell bg-dark">
+                    <img class="carousel-cell-image"
+                         data-flickity-lazyload="https://images.wallpapershq.com/wallpapers/8193/wallpaper_8193_1284x2778.jpg"
+                         alt="Openhaimmer"/>
+                </div>
+                <div class="carousel-cell bg-dark">
+                    <img class="carousel-cell-image"
+                         data-flickity-lazyload="https://images.wallpapershq.com/wallpapers/8155/wallpaper_8155_1284x2778.jpg"
+                         alt="Spider-Man"/>
+                </div>
+                <div class="carousel-cell bg-dark">
+                    <img class="carousel-cell-image"
+                         data-flickity-lazyload="https://img2.akspic.ru/previews/7/1/0/7/6/167017/167017-kniga_boby_fetta_plakat-fenek_shand-poster-disneevskij_film-kompaniya_lucasfilm-x750.jpg"
+                         alt="Book of Boba"/>
+                </div>
+                <div class="carousel-cell bg-dark">
+                    <img class="carousel-cell-image"
+                         data-flickity-lazyload="../matrix.jpg"
+                         alt="Matrix"/>
+                </div>
+                <div class="carousel-cell bg-dark">
+                    <img class="carousel-cell-image"
+                         data-flickity-lazyload="https://img2.akspic.ru/crops/4/6/1/7/6/167164/167164-dzhoker_beztekstovyj_poster-myurrej_franklin-92_ya_nagrada_akademii-poster-poster_filma-1242x2688.jpg"
+                         alt="Joker"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="../js/loadInformation.js"></script>
+<script src="../js/cookie.js"></script>
+<script src="../js/dinamicPageElements.js"></script>
+</body>
+</html>

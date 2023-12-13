@@ -1,0 +1,139 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.dark {
+    background-color: rgb(19, 23, 34, 1) !important;
+}
+
+.container {
+    display: flex;
+}
+
+.navbar {
+    height: 70px;
+}
+
+.sidebar {
+    width: 220px;
+    position: fixed;
+    top: 65px;
+    left: 0;
+    bottom: 0;
+    color: aliceblue;
+    background-color: rgba(19, 23, 34, 255);
+    padding: 20px;
+    overflow-y: auto;
+    text-align: justify;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar h5 {
+    margin-bottom: 23px;
+}
+
+main {
+    margin-left: 220px;
+    margin-top: 60px;
+}
+
+#enterButton {
+    margin-left: 7px;
+}
+
+.usual-text {
+    font-family: Arial, sans-serif;
+    font-size: 18px;
+}
+
+.carousel-cell {
+    width: 25%;
+    height: 720px;
+    margin-right: 10px;
+    background: rgba(250, 235, 215, 0.7);
+}
+
+.carousel-cell-image {
+    display: block;
+    max-height: 100%;
+    margin: 0 auto;
+    max-width: 100%;
+    opacity: 0;
+    -webkit-transition: opacity 0.4s;
+    transition: opacity 0.4s;
+}
+
+/* fade in lazy loaded image */
+.carousel-cell-image.flickity-lazyloaded,
+.carousel-cell-image.flickity-lazyerror {
+    opacity: 1;
+}
+
+.film-container {
+    margin-left: 220px;
+    margin-top: 60px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.film-card {
+    width: 255px;
+    margin: 20px;
+    border-radius: 2px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+}
+
+.film-card:hover {
+    transform: scale(1.05);
+}
+
+.film-image {
+    width: 100%;
+    height: 360px;
+    object-fit: cover;
+}
+
+.film-title {
+    padding: 10px;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    color: #fefefe;
+}
+
+.new-image {
+    margin-top: 50px;
+    width: 100%;
+    height: 255px;
+    object-fit: cover;
+    object-position: 50% 50%;
+}
+
+.notModal {
+    max-width: 700px;
+    margin: 70px auto;
+    color: #fefefe;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.userTable {
+    max-width: 1000px;
+    margin: 70px auto;
+    color: #fefefe;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.sidebar a{
+    text-decoration: none;
+    color: #f8f9fa;
+}
+
+.modal{
+    color: #d6dade;
+}

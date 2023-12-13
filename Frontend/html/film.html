@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Фильм</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/film.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"/>
+</head>
+<body class="dark">
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand link-light ms-5" href="landing.html">Киносайт</a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="mx-auto d-flex justify-content-between">
+                    <form class="form-inline" id="searchForm">
+                        <input class="form-control flex-grow-1" type="search" placeholder="Название фильма"
+                               aria-label="Search">
+                    </form>
+                    <button class="btn btn-outline-light my-sm-0" id="enterButton">Поиск</button>
+                </div>
+                <a id="enter" class="nav-link link-light me-3" href="login.html">Войти</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div class="wrap-main wrap-center">
+    <div class="content">
+        <div id="dle-content">
+            <article class="article full ignore-select">
+                <div class="fcols fx-row sect">
+
+                    <div class="fleft">
+                        <div class="fposter img-box img-fit">
+                            <img src="" alt="" id="previewImage" class="anim">
+                        </div>
+
+                    </div>
+
+                    <!-- END FLEFT -->
+
+                    <div class="fright fx-1">
+
+                        <h1 class="title"></h1>
+                        <div class="fmeta fx-row fx-start">
+                            <span>Год выпуска</span>
+                            <div id="releaseYear"></div>
+                        </div>
+                        <ul class="flist">
+                            <li><span>Рейтинг:</span>
+                                <div id="positiveReviewsPercentage"></div>
+                            </li>
+                            <li><span>Страна:</span>
+                                <div id="country"></div>
+                            </li>
+                            <li><span>Жанр:</span>
+                                <div id="genre"></div>
+                            </li>
+                            <li><span>Режиссер:</span>
+                                <div id="directors"></div>
+                            </li>
+                            <li><span>В ролях:</span>
+                                <div id="actors"></div>
+                            </li>
+                            <li><span>Время:</span>
+                                <div id="runtime"></div>
+                            </li>
+                            <li><span>Языки:</span>
+                                <div id="languages"></div>
+                            </li>
+
+                        </ul>
+
+                        <div class="fright-title">Сюжет</div>
+                        <div id="description" class="fdesc clr full-text clearfix">
+
+                        </div>
+
+                        <div class="fplayer tabs-box">
+                            <div class="fplayer-header fx-row fx-middle">
+                                <h2 class="fsubtitle fx-1">Смотреть трейлер фильма <span class="title"> </span></h2>
+
+                            </div>
+
+                            <div class="tabs-b video-box visible">
+                                <iframe id="trailerLink" width="560" height="315"
+                                        src="https://www.youtube.com/embed/JEEQjpNT8BQ?si=osh-WXVn-aPi19AS"
+                                        title="YouTube video player" frameborder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                        allowfullscreen></iframe>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+                <div class="sect sect-bg fcomms" style="background-color: transparent;">
+                    <div class="sect-header fx-row fx-middle">
+                        <div class="sect-title" style="text-transform: none;">Отзывы к <span class="title"></span> :</div>
+                    </div>
+
+                    <div class="sect-content fcomms-list" id="full-comms">
+                        <form method="post" name="dlemasscomments" id="dlemasscomments">
+                            <div id="dle-comments-list">
+                                <div id="dle-ajax-comments"></div>
+                                <div id="comment"></div>
+                                <ol class="comments-tree-list" id="commentsTreeList"></ol>
+                            </div>
+                        </form>
+
+                    </div>
+
+                    <form method="post" name="dle-comments-form" id="dle-comments-form"><!--noindex-->
+                        <div class="add-comms" id="add-comms">
+                            <div class="ac-textarea">
+                                <div class="bb-editor">
+                                    <textarea placeholder="Комментарий..." name="comments" id="comments" cols="70" rows="10"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn mt-3 btn-primary" onclick="addComment(event)">Добавить</button>
+                        </div>
+                    </form>
+                </div>
+
+            </article>
+        </div>
+    </div>
+
+</div>
+
+<script src="../js/loadInformation.js"></script>
+<script src="../js/cookie.js"></script>
+<script src="../js/loadInformation.js"></script>
+<script src="../js/fetchAPI.js"></script>
+<script src="../js/dinamicPageElements.js"></script>
+<script src="../js/film.js"></script>
+</body>
+</html>
