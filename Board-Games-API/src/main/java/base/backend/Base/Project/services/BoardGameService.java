@@ -2,7 +2,7 @@ package base.backend.Base.Project.services;
 
 import base.backend.Base.Project.models.BoardGame;
 import base.backend.Base.Project.models.dto.BoardGameDTO;
-import base.backend.Base.Project.repositories.BoardGamesRepository;
+import base.backend.Base.Project.repositories.BoardGameRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -14,33 +14,33 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class BoardGamesService {
+public class BoardGameService {
 
-    private final BoardGamesRepository boardGamesRepository;
+    private final BoardGameRepository boardGameRepository;
 
-    public BoardGamesService(BoardGamesRepository boardGamesRepository) {
-        this.boardGamesRepository = boardGamesRepository;
+    public BoardGameService(BoardGameRepository boardGameRepository) {
+        this.boardGameRepository = boardGameRepository;
     }
 
     public List<BoardGame> getAllBoardGames() {
-        return boardGamesRepository.findAll();
+        return boardGameRepository.findAll();
     }
 
     public Optional<BoardGame> getBoardGameById(Integer id) {
-        return boardGamesRepository.findById(id);
+        return boardGameRepository.findById(id);
     }
 
     public List<BoardGame> getBoardGamesByCategory(String category) {
-        return boardGamesRepository.findByCategory(category);
+        return boardGameRepository.findByCategory(category);
     }
 
     public BoardGame createBoardGame(BoardGameDTO boardGameDTO) {
         BoardGame newBoardGame = new BoardGame(boardGameDTO);
-        return boardGamesRepository.save(newBoardGame);
+        return boardGameRepository.save(newBoardGame);
     }
 
     public BoardGame updateBoardGame(Integer id, Map<String, Object> updates) {
-        BoardGame existingBoardGame = boardGamesRepository
+        BoardGame existingBoardGame = boardGameRepository
                 .findById(id)
                 .orElseThrow(this::boardGameNotFound);
 
@@ -68,11 +68,11 @@ public class BoardGamesService {
             existingBoardGame.setPrice((BigDecimal) updates.get("price"));
         }
 
-        return boardGamesRepository.save(existingBoardGame);
+        return boardGameRepository.save(existingBoardGame);
     }
 
     public void deleteBoardGame(Integer id) {
-        boardGamesRepository.deleteById(id);
+        boardGameRepository.deleteById(id);
     }
 
     private ResponseStatusException boardGameNotFound() {
