@@ -23,8 +23,14 @@ public class Stock {
     private Integer stockId;
     @Column(name = "board_game_id")
     private Integer boardGameId;
+    @ManyToOne
+    @JoinColumn(name = "board_game_id", nullable = false, insertable = false, updatable = false)
+    private BoardGame boardGame;
     @Column(name = "store_id")
     private Integer storeId;
+    @ManyToOne
+    @JoinColumn(name = "store_id", nullable = false, insertable = false, updatable = false)
+    private Store store;
     @Column
     private Integer quantity;
 }

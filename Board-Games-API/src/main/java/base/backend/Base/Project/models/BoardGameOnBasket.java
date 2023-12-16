@@ -23,6 +23,9 @@ public class BoardGameOnBasket {
     private Integer boardGameOnBasketId;
     @Column(name = "basket_id")
     private Integer basketId;
+    @ManyToOne
+    @JoinColumn(name = "basket_id", nullable = false, insertable = false, updatable = false)
+    private Basket basket;
     @Column(name = "board_game_id")
     private Integer boardGameId;
     private Integer quantity;

@@ -28,6 +28,9 @@ public class Order {
     private Integer orderId;
     @Column(name = "user_id")
     private Integer userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false, insertable = false, updatable = false)
+    private User user;
     @Column(name = "order_date")
     private LocalDateTime orderDate;
     private String orderDetails;
