@@ -41,6 +41,15 @@ public class UserController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<User> login(@RequestBody User userDTO) {
+        User user = userService.authenticate(userDTO.getEmail(), userDTO.getPassword());
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
         User newUser = userService.createUser(userDTO);

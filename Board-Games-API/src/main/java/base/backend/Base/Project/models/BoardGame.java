@@ -21,6 +21,7 @@ public class BoardGame {
         this.releaseDate = boardGameDTO.getReleaseDate();
         this.category = boardGameDTO.getCategory();
         this.price = boardGameDTO.getPrice();
+        this.previewImage = boardGameDTO.getPreviewImage();
     }
 
     @Id
@@ -33,5 +34,6 @@ public class BoardGame {
     private LocalDate releaseDate;
     private String category;
     private BigDecimal price;
+    private String previewImage;
 }
 

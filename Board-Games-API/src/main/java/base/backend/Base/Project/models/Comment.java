@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @Entity
@@ -33,4 +35,5 @@ public class Comment {
     private User user;
     @Column
     private String text;
+    private LocalDateTime date;
 }

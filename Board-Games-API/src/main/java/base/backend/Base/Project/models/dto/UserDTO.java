@@ -14,10 +14,12 @@ public class UserDTO {
         this.email = user.getEmail();
         this.password = user.getPassword();
         this.role = user.getRole();
+        this.username = user.getUsername();
     }
 
     private Integer userId;
     private String email;
     private String password;
     private User.UserRole role;
+    private String username;
 }

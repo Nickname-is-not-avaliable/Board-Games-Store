@@ -23,6 +23,7 @@ public class BoardGameDTO {
         this.releaseDate = boardGame.getReleaseDate();
         this.category = boardGame.getCategory();
         this.price = boardGame.getPrice();
+        this.previewImage = boardGame.getPreviewImage();
     }
 
     private Integer id;
@@ -32,4 +33,5 @@ public class BoardGameDTO {
     private LocalDate releaseDate;
     private String category;
     private BigDecimal price;
+    private String previewImage;
 }

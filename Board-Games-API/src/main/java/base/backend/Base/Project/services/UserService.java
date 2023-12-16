@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -28,8 +29,22 @@ public class UserService {
         return userRepository.findById(id);
     }
 
+    public User authenticate(String email, String password) {
+        List<User> users = getAllUsers();
+
+        for (User user : users) {
+            if (user.getEmail().equals(email) && user.getPassword().equals(org.apache.commons.codec.digest.DigestUtils.sha256Hex(password))) {
+                return user;
+            }
+        }
+
+        return null;
+    }
+
     public User createUser(UserDTO userDTO) {
         User user = new User(userDTO);
+        user.setDateOfRegistration(LocalDate.now());
+        user.setPassword(org.apache.commons.codec.digest.DigestUtils.sha256Hex(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -40,9 +55,13 @@ public class UserService {
         if (updates.containsKey("email")) {
             existingUser.setEmail((String) updates.get("email"));
         }
+        if (updates.containsKey("username")) {
+            existingUser.setUsername((String) updates.get("username"));
+        }
 
         if (updates.containsKey("password")) {
-            existingUser.setPassword((String) updates.get("password"));
+            String hashedPassword = org.apache.commons.codec.digest.DigestUtils.sha256Hex((String) updates.get("password"));
+            existingUser.setPassword(hashedPassword);
         }
 
         if (updates.containsKey("role")) {

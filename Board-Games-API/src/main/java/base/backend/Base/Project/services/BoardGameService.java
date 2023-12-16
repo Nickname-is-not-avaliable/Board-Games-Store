@@ -68,6 +68,9 @@ public class BoardGameService {
             existingBoardGame.setPrice((BigDecimal) updates.get("price"));
         }
 
+        if (updates.containsKey("previewImage")) {
+            existingBoardGame.setPreviewImage((String) updates.get("previewImage"));
+        }
         return boardGameRepository.save(existingBoardGame);
     }
 
