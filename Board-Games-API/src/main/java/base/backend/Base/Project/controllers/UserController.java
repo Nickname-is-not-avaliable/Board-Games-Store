@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/users")
@@ -24,34 +25,43 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
         List<User> users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
+        List<UserDTO> userDTOs = users.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(userDTOs);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Integer id) {
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Integer id) {
         Optional<User> user = userService.getUserById(id);
         return user
-                .map(ResponseEntity::ok)
+                .map(u -> ResponseEntity.ok(convertToDTO(u)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
         User newUser = userService.createUser(userDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+        UserDTO newUserDTO = convertToDTO(newUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newUserDTO);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Integer id, @RequestBody Map<String, Object> updates) {
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Integer id, @RequestBody Map<String, Object> updates) {
         User updatedUser = userService.updateUser(id, updates);
-        return ResponseEntity.ok(updatedUser);
+        UserDTO updatedUserDTO = convertToDTO(updatedUser);
+        return ResponseEntity.ok(updatedUserDTO);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private UserDTO convertToDTO(User user) {
+        return new UserDTO(user);
     }
 }

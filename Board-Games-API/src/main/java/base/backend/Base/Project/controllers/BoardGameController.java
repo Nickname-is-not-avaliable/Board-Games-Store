@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/board-games")
@@ -24,43 +25,55 @@ public class BoardGameController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BoardGame>> getAllBoardGames() {
+    public ResponseEntity<List<BoardGameDTO>> getAllBoardGames() {
         List<BoardGame> boardGames = boardGameService.getAllBoardGames();
-        return ResponseEntity.ok(boardGames);
+        List<BoardGameDTO> boardGameDTOs = boardGames.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(boardGameDTOs);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BoardGame> getBoardGameById(@PathVariable Integer id) {
-        Optional<BoardGame> boardGame = boardGameService.getBoardGameById(id);
-        return boardGame
-                .map(ResponseEntity::ok)
+    public ResponseEntity<BoardGameDTO> getBoardGameById(@PathVariable Integer id) {
+        Optional<BoardGame> optionalBoardGame = boardGameService.getBoardGameById(id);
+        return optionalBoardGame
+                .map(boardGame -> ResponseEntity.ok(convertToDTO(boardGame)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/by-category/{category}")
-    public ResponseEntity<List<BoardGame>> getBoardGamesByCategory(@PathVariable String category) {
+    public ResponseEntity<List<BoardGameDTO>> getBoardGamesByCategory(@PathVariable String category) {
         List<BoardGame> boardGames = boardGameService.getBoardGamesByCategory(category);
-        return ResponseEntity.ok(boardGames);
+        List<BoardGameDTO> boardGameDTOs = boardGames.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(boardGameDTOs);
     }
 
     @PostMapping
-    public ResponseEntity<BoardGame> createBoardGame(@RequestBody BoardGameDTO boardGameDTO) {
+    public ResponseEntity<BoardGameDTO> createBoardGame(@RequestBody BoardGameDTO boardGameDTO) {
         BoardGame newBoardGame = boardGameService.createBoardGame(boardGameDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newBoardGame);
+        BoardGameDTO newBoardGameDTO = convertToDTO(newBoardGame);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newBoardGameDTO);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<BoardGame> updateBoardGame(
+    public ResponseEntity<BoardGameDTO> updateBoardGame(
             @PathVariable Integer id,
             @RequestBody Map<String, Object> updates
     ) {
         BoardGame updatedBoardGame = boardGameService.updateBoardGame(id, updates);
-        return ResponseEntity.ok(updatedBoardGame);
+        BoardGameDTO updatedBoardGameDTO = convertToDTO(updatedBoardGame);
+        return ResponseEntity.ok(updatedBoardGameDTO);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBoardGame(@PathVariable Integer id) {
         boardGameService.deleteBoardGame(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private BoardGameDTO convertToDTO(BoardGame boardGame) {
+        return new BoardGameDTO();
     }
 }

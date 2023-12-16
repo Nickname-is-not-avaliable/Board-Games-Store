@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/comments")
@@ -24,23 +25,29 @@ public class CommentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Comment>> getAllComments() {
+    public ResponseEntity<List<CommentDTO>> getAllComments() {
         List<Comment> comments = commentService.getAllComments();
-        return ResponseEntity.ok(comments);
+        List<CommentDTO> commentDTOs = comments.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(commentDTOs);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Comment> getCommentById(@PathVariable Integer id) {
+    public ResponseEntity<CommentDTO> getCommentById(@PathVariable Integer id) {
         Optional<Comment> comment = commentService.getCommentById(id);
         return comment
-                .map(ResponseEntity::ok)
+                .map(c -> ResponseEntity.ok(convertToDTO(c)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/by-board-game/{boardGameId}")
-    public ResponseEntity<List<Comment>> getCommentsByBoardGameId(@PathVariable Integer boardGameId) {
+    public ResponseEntity<List<CommentDTO>> getCommentsByBoardGameId(@PathVariable Integer boardGameId) {
         List<Comment> comments = commentService.getCommentsByBoardGameId(boardGameId);
-        return ResponseEntity.ok(comments);
+        List<CommentDTO> commentDTOs = comments.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(commentDTOs);
     }
 
     @PostMapping
@@ -50,17 +57,22 @@ public class CommentController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Comment> updateComment(
+    public ResponseEntity<CommentDTO> updateComment(
             @PathVariable Integer id,
             @RequestBody Map<String, Object> updates
     ) {
         Comment updatedComment = commentService.updateComment(id, updates);
-        return ResponseEntity.ok(updatedComment);
+        CommentDTO updatedCommentDTO = convertToDTO(updatedComment);
+        return ResponseEntity.ok(updatedCommentDTO);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteComment(@PathVariable Integer id) {
         commentService.deleteComment(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private CommentDTO convertToDTO(Comment comment) {
+        return new CommentDTO(comment);
     }
 }

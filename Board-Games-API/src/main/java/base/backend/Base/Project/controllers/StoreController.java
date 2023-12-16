@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/stores")
@@ -23,28 +24,36 @@ public class StoreController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Store>> getAllStores() {
+    public ResponseEntity<List<StoreDTO>> getAllStores() {
         List<Store> stores = storeService.getAllStores();
-        return ResponseEntity.ok(stores);
+        List<StoreDTO> storeDTOs = stores.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(storeDTOs);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Store> getStoreById(@PathVariable Integer id) {
+    public ResponseEntity<StoreDTO> getStoreById(@PathVariable Integer id) {
         Optional<Store> store = storeService.getStoreById(id);
         return store
-                .map(ResponseEntity::ok)
+                .map(s -> ResponseEntity.ok(convertToDTO(s)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Store> createStore(@RequestBody StoreDTO storeDTO) {
+    public ResponseEntity<StoreDTO> createStore(@RequestBody StoreDTO storeDTO) {
         Store newStore = storeService.createStore(storeDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newStore);
+        StoreDTO newStoreDTO = convertToDTO(newStore);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newStoreDTO);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStore(@PathVariable Integer id) {
         storeService.deleteStore(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private StoreDTO convertToDTO(Store store) {
+        return new StoreDTO(store);
     }
 }

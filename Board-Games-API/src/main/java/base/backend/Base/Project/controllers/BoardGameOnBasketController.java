@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/board-games-on-basket")
@@ -24,43 +25,55 @@ public class BoardGameOnBasketController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BoardGameOnBasket>> getAllBoardGamesOnBasket() {
+    public ResponseEntity<List<BoardGameOnBasketDTO>> getAllBoardGamesOnBasket() {
         List<BoardGameOnBasket> boardGamesOnBasket = boardGameOnBasketService.getAllBoardGamesOnBasket();
-        return ResponseEntity.ok(boardGamesOnBasket);
+        List<BoardGameOnBasketDTO> boardGameOnBasketDTOs = boardGamesOnBasket.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(boardGameOnBasketDTOs);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BoardGameOnBasket> getBoardGameOnBasketById(@PathVariable Integer id) {
+    public ResponseEntity<BoardGameOnBasketDTO> getBoardGameOnBasketById(@PathVariable Integer id) {
         Optional<BoardGameOnBasket> boardGameOnBasket = boardGameOnBasketService.getBoardGameOnBasketById(id);
         return boardGameOnBasket
-                .map(ResponseEntity::ok)
+                .map(basket -> ResponseEntity.ok(convertToDTO(basket)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/by-basket/{basketId}")
-    public ResponseEntity<List<BoardGameOnBasket>> getBoardGamesOnBasketByBasketId(@PathVariable Integer basketId) {
+    public ResponseEntity<List<BoardGameOnBasketDTO>> getBoardGamesOnBasketByBasketId(@PathVariable Integer basketId) {
         List<BoardGameOnBasket> boardGamesOnBasket = boardGameOnBasketService.getBoardGamesOnBasketByBasketId(basketId);
-        return ResponseEntity.ok(boardGamesOnBasket);
+        List<BoardGameOnBasketDTO> boardGameOnBasketDTOs = boardGamesOnBasket.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(boardGameOnBasketDTOs);
     }
 
     @PostMapping
-    public ResponseEntity<BoardGameOnBasket> createBoardGameOnBasket(@RequestBody BoardGameOnBasketDTO boardGameOnBasketDTO) {
+    public ResponseEntity<BoardGameOnBasketDTO> createBoardGameOnBasket(@RequestBody BoardGameOnBasketDTO boardGameOnBasketDTO) {
         BoardGameOnBasket newBoardGameOnBasket = boardGameOnBasketService.createBoardGameOnBasket(boardGameOnBasketDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newBoardGameOnBasket);
+        BoardGameOnBasketDTO newBoardGameOnBasketDTO = convertToDTO(newBoardGameOnBasket);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newBoardGameOnBasketDTO);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<BoardGameOnBasket> updateBoardGameOnBasket(
+    public ResponseEntity<BoardGameOnBasketDTO> updateBoardGameOnBasket(
             @PathVariable Integer id,
             @RequestBody Map<String, Object> updates
     ) {
         BoardGameOnBasket updatedBoardGameOnBasket = boardGameOnBasketService.updateBoardGameOnBasket(id, updates);
-        return ResponseEntity.ok(updatedBoardGameOnBasket);
+        BoardGameOnBasketDTO updatedBoardGameOnBasketDTO = convertToDTO(updatedBoardGameOnBasket);
+        return ResponseEntity.ok(updatedBoardGameOnBasketDTO);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBoardGameOnBasket(@PathVariable Integer id) {
         boardGameOnBasketService.deleteBoardGameOnBasket(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private BoardGameOnBasketDTO convertToDTO(BoardGameOnBasket boardGameOnBasket) {
+        return new BoardGameOnBasketDTO(boardGameOnBasket);
     }
 }

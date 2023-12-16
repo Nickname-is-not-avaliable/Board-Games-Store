@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/stocks")
@@ -24,49 +25,64 @@ public class StockController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Stock>> getAllStocks() {
+    public ResponseEntity<List<StockDTO>> getAllStocks() {
         List<Stock> stocks = stockService.getAllStocks();
-        return ResponseEntity.ok(stocks);
+        List<StockDTO> stockDTOs = stocks.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(stockDTOs);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Stock> getStockById(@PathVariable Integer id) {
+    public ResponseEntity<StockDTO> getStockById(@PathVariable Integer id) {
         Optional<Stock> stock = stockService.getStockById(id);
         return stock
-                .map(ResponseEntity::ok)
+                .map(s -> ResponseEntity.ok(convertToDTO(s)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/by-board-game/{boardGameId}")
-    public ResponseEntity<List<Stock>> getStocksByBoardGameId(@PathVariable Integer boardGameId) {
+    public ResponseEntity<List<StockDTO>> getStocksByBoardGameId(@PathVariable Integer boardGameId) {
         List<Stock> stocks = stockService.getStocksByBoardGameId(boardGameId);
-        return ResponseEntity.ok(stocks);
+        List<StockDTO> stockDTOs = stocks.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(stockDTOs);
     }
 
     @GetMapping("/by-store/{storeId}")
-    public ResponseEntity<List<Stock>> getStocksByStoreId(@PathVariable Integer storeId) {
+    public ResponseEntity<List<StockDTO>> getStocksByStoreId(@PathVariable Integer storeId) {
         List<Stock> stocks = stockService.getStocksByStoreId(storeId);
-        return ResponseEntity.ok(stocks);
+        List<StockDTO> stockDTOs = stocks.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(stockDTOs);
     }
 
     @PostMapping
-    public ResponseEntity<Stock> createStock(@RequestBody StockDTO stockDTO) {
+    public ResponseEntity<StockDTO> createStock(@RequestBody StockDTO stockDTO) {
         Stock newStock = stockService.createStock(stockDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newStock);
+        StockDTO newStockDTO = convertToDTO(newStock);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newStockDTO);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Stock> updateStock(
+    public ResponseEntity<StockDTO> updateStock(
             @PathVariable Integer id,
             @RequestBody Map<String, Object> updates
     ) {
         Stock updatedStock = stockService.updateStock(id, updates);
-        return ResponseEntity.ok(updatedStock);
+        StockDTO updatedStockDTO = convertToDTO(updatedStock);
+        return ResponseEntity.ok(updatedStockDTO);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStock(@PathVariable Integer id) {
         stockService.deleteStock(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private StockDTO convertToDTO(Stock stock) {
+        return new StockDTO(stock);
     }
 }

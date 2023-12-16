@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/orders")
@@ -24,43 +25,55 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Order>> getAllOrders() {
+    public ResponseEntity<List<OrderDTO>> getAllOrders() {
         List<Order> orders = orderService.getAllOrders();
-        return ResponseEntity.ok(orders);
+        List<OrderDTO> orderDTOs = orders.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(orderDTOs);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Order> getOrderById(@PathVariable Integer id) {
+    public ResponseEntity<OrderDTO> getOrderById(@PathVariable Integer id) {
         Optional<Order> order = orderService.getOrderById(id);
         return order
-                .map(ResponseEntity::ok)
+                .map(o -> ResponseEntity.ok(convertToDTO(o)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/by-user/{userId}")
-    public ResponseEntity<List<Order>> getOrdersByUserId(@PathVariable Integer userId) {
+    public ResponseEntity<List<OrderDTO>> getOrdersByUserId(@PathVariable Integer userId) {
         List<Order> orders = orderService.getOrdersByUserId(userId);
-        return ResponseEntity.ok(orders);
+        List<OrderDTO> orderDTOs = orders.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(orderDTOs);
     }
 
     @PostMapping
-    public ResponseEntity<Order> createOrder(@RequestBody OrderDTO orderDTO) {
+    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
         Order newOrder = orderService.createOrder(orderDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newOrder);
+        OrderDTO newOrderDTO = convertToDTO(newOrder);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newOrderDTO);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Order> updateOrder(
+    public ResponseEntity<OrderDTO> updateOrder(
             @PathVariable Integer id,
             @RequestBody Map<String, Object> updates
     ) {
         Order updatedOrder = orderService.updateOrder(id, updates);
-        return ResponseEntity.ok(updatedOrder);
+        OrderDTO updatedOrderDTO = convertToDTO(updatedOrder);
+        return ResponseEntity.ok(updatedOrderDTO);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteOrder(@PathVariable Integer id) {
         orderService.deleteOrder(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private OrderDTO convertToDTO(Order order) {
+        return new OrderDTO(order);
     }
 }
