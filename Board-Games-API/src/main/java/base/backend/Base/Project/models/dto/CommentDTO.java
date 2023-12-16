@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,10 +18,12 @@ public class CommentDTO {
         this.boardGameId = comment.getBoardGameId();
         this.userId = comment.getUserId();
         this.text = comment.getText();
+        this.date = comment.getDate();
     }
 
     private Integer commentId;
     private Integer boardGameId;
     private Integer userId;
     private String text;
+    private LocalDateTime date;
 }

@@ -18,6 +18,7 @@ public class User {
         this.password = userDTO.getPassword();
         this.role = userDTO.getRole();
         this.username = userDTO.getUsername();
+        this.dateOfRegistration = userDTO.getDateOfRegistration();
     }
 
     @Id
@@ -30,6 +31,7 @@ public class User {
     private LocalDate dateOfRegistration;
     @Enumerated(EnumType.STRING)
     private UserRole role;
+
     public enum UserRole {
         USER, ADMIN
     }

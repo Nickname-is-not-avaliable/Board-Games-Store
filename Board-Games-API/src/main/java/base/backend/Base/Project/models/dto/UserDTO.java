@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,6 +17,7 @@ public class UserDTO {
         this.password = user.getPassword();
         this.role = user.getRole();
         this.username = user.getUsername();
+        this.dateOfRegistration = user.getDateOfRegistration();
     }
 
     private Integer userId;
@@ -22,4 +25,5 @@ public class UserDTO {
     private String password;
     private User.UserRole role;
     private String username;
+    private LocalDate dateOfRegistration;
 }

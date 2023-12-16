@@ -17,6 +17,7 @@ public class Comment {
         this.boardGameId = commentDTO.getBoardGameId();
         this.userId = commentDTO.getUserId();
         this.text = commentDTO.getText();
+        this.date = commentDTO.getDate();
     }
 
     @Id
