@@ -74,6 +74,6 @@ public class BoardGameController {
     }
 
     private BoardGameDTO convertToDTO(BoardGame boardGame) {
-        return new BoardGameDTO();
+        return new BoardGameDTO(boardGame);
     }
 }
