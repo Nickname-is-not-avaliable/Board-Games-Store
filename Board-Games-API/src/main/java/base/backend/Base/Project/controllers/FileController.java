@@ -6,11 +6,15 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.io.IOException;
-import java.io.InputStream;
-import org.springframework.core.io.InputStreamResource;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,69 +30,83 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "Files", description = "Operations for interacting with files")
 public class FileController {
 
-  private final FileService fileService;
+    private final FileService fileService;
 
-  public FileController(FileService fileService) {
-    this.fileService = fileService;
-  }
-
-  @Operation(summary = "Upload file")
-  @PostMapping(
-    value = "/uploadFile",
-    consumes = MediaType.MULTIPART_FORM_DATA_VALUE
-  )
-  public ResponseEntity<Boolean> addFile(
-    @RequestPart(value = "file") @Parameter(
-      content = @Content(
-        mediaType = "multipart/form-data",
-        schema = @Schema(type = "string", format = "binary")
-      )
-    ) MultipartFile file
-  ) {
-    if (fileService.addFile(file)) {
-      return ResponseEntity.ok(true);
-    } else {
-      return ResponseEntity.badRequest().body(false);
+    public FileController(FileService fileService) {
+        this.fileService = fileService;
     }
-  }
 
-  @Operation(summary = "Remove file")
-  @DeleteMapping("/deleteFile")
-  public ResponseEntity<Boolean> removeFile(
-    @RequestParam @Parameter(description = "File name") String fileName
-  ) {
-    if (fileService.removeFile(fileName)) {
-      return ResponseEntity.ok(true);
-    } else {
-      return ResponseEntity.badRequest().body(false);
+    @Operation(summary = "Upload file")
+    @PostMapping(
+            value = "/uploadFile",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    public ResponseEntity<Map<String, String>> addFile(
+            @RequestPart(value = "file") @Parameter(
+                    content = @Content(
+                            mediaType = "multipart/form-data",
+                            schema = @Schema(type = "string", format = "binary")
+                    )
+            ) MultipartFile file
+    ) {
+        Map<String, String> response = new HashMap<>();
+        if (fileService.addFile(file)) {
+            response.put("fileName", file.getOriginalFilename());
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
-  }
 
-  @Operation(summary = "Find file")
-  @GetMapping("/{fileName:.+}")
-  public ResponseEntity<InputStreamResource> serveFile(
-    @PathVariable String fileName
-  ) {
-    try {
-      Resource resource = fileService.loadFile(fileName);
+    @GetMapping("/search/{fileName:.+}")
+    public ResponseEntity<Resource> serveImage(@PathVariable String fileName) {
+        try {
+            Path imagePath = Paths
+                    .get("uploads")
+                    .resolve(fileName)
+                    .normalize();
+            Resource resource = new UrlResource(imagePath.toUri());
 
-      if (resource.exists()) {
-        InputStream inputStream = resource.getInputStream();
+            if (resource.exists()) {
+                String contentType = determineContentType(fileName);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentDispositionFormData("inline", resource.getFilename());
-        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-
-        return new ResponseEntity<>(
-          new InputStreamResource(inputStream),
-          headers,
-          HttpStatus.OK
-        );
-      } else {
-        return ResponseEntity.badRequest().build();
-      }
-    } catch (IOException ex) {
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return ResponseEntity
+                        .ok()
+                        .header(
+                                "Content-Disposition",
+                                "inline; filename=\"" + resource.getFilename() + "\""
+                        )
+                        .contentType(MediaType.parseMediaType(contentType))
+                        .body(resource);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (IOException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
-  }
+
+    private String determineContentType(String imageName) {
+        if (imageName.endsWith(".jpg") || imageName.endsWith(".jpeg")) {
+            return "image/jpeg";
+        } else if (imageName.endsWith(".png")) {
+            return "image/png";
+        } else if (imageName.endsWith(".gif")) {
+            return "image/gif";
+        } else {
+            return "application/octet-stream";
+        }
+    }
+
+    @Operation(summary = "Remove file")
+    @DeleteMapping("/deleteFile")
+    public ResponseEntity<Boolean> removeFile(
+            @RequestParam @Parameter(description = "File name") String fileName
+    ) {
+        if (fileService.removeFile(fileName)) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.badRequest().body(false);
+        }
+    }
 }
