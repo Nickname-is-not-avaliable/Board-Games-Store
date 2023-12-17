@@ -9,4 +9,6 @@ import java.util.List;
 @RepositoryRestResource(exported = false)
 public interface BoardGameRepository extends JpaRepository<BoardGame, Integer> {
     List<BoardGame> findByCategory(String category);
+
+    List<BoardGame> findByTitleContainingIgnoreCase(String searchString);
 }

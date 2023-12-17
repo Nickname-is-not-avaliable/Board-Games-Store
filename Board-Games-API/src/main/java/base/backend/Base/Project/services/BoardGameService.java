@@ -33,6 +33,10 @@ public class BoardGameService {
         return boardGameRepository.findByCategory(category);
     }
 
+    public List<BoardGame> getBoardGamesByTitleContaining(String searchString) {
+        return boardGameRepository.findByTitleContainingIgnoreCase(searchString);
+    }
+
     public BoardGame createBoardGame(BoardGameDTO boardGameDTO) {
         BoardGame newBoardGame = new BoardGame(boardGameDTO);
         return boardGameRepository.save(newBoardGame);

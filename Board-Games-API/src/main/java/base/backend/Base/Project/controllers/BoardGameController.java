@@ -73,6 +73,14 @@ public class BoardGameController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<BoardGameDTO>> getBoardGamesByTitleContaining(@RequestParam String searchString) {
+        List<BoardGameDTO> movieDTOs = boardGameService.getBoardGamesByTitleContaining(searchString).stream()
+                .map(BoardGameDTO::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(movieDTOs);
+    }
+
     private BoardGameDTO convertToDTO(BoardGame boardGame) {
         return new BoardGameDTO(boardGame);
     }
