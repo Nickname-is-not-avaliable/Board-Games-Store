@@ -34,7 +34,7 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, insertable = false, updatable = false)
     private User user;
-    @Column
+    @Column(length = 2048)
     private String text;
     private LocalDateTime date;
 }

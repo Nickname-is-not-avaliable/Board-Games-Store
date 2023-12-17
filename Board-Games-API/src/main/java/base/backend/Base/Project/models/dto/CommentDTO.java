@@ -19,11 +19,13 @@ public class CommentDTO {
         this.userId = comment.getUserId();
         this.text = comment.getText();
         this.date = comment.getDate();
+        this.username = comment.getUser().getUsername();
     }
 
     private Integer commentId;
     private Integer boardGameId;
     private Integer userId;
+    private String username;
     private String text;
     private LocalDateTime date;
 }

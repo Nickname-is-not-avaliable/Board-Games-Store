@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -57,7 +56,7 @@ public class BoardGameService {
         }
 
         if (updates.containsKey("releaseDate")) {
-            existingBoardGame.setReleaseDate((LocalDate) updates.get("releaseDate"));
+            existingBoardGame.setReleaseDate((String) updates.get("releaseDate"));
         }
 
         if (updates.containsKey("category")) {
@@ -70,6 +69,26 @@ public class BoardGameService {
 
         if (updates.containsKey("previewImage")) {
             existingBoardGame.setPreviewImage((String) updates.get("previewImage"));
+        }
+
+        if (updates.containsKey("numberOfPlayers")) {
+            existingBoardGame.setNumberOfPlayers((Integer) updates.get("numberOfPlayers"));
+        }
+
+        if (updates.containsKey("age")) {
+            existingBoardGame.setAge((Integer) updates.get("age"));
+        }
+
+        if (updates.containsKey("playtime")) {
+            existingBoardGame.setPlaytime((String) updates.get("playtime"));
+        }
+
+        if (updates.containsKey("reviewLink")) {
+            existingBoardGame.setReviewLink((String) updates.get("reviewLink"));
+        }
+
+        if (updates.containsKey("countryOfManufacture")) {
+            existingBoardGame.setCountryOfManufacture((String) updates.get("countryOfManufacture"));
         }
         return boardGameRepository.save(existingBoardGame);
     }

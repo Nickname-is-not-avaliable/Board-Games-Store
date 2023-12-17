@@ -1,7 +1,6 @@
 package base.backend.Base.Project.models;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 import base.backend.Base.Project.models.dto.BoardGameDTO;
 import jakarta.persistence.*;
@@ -22,6 +21,11 @@ public class BoardGame {
         this.category = boardGameDTO.getCategory();
         this.price = boardGameDTO.getPrice();
         this.previewImage = boardGameDTO.getPreviewImage();
+        this.numberOfPlayers = boardGameDTO.getNumberOfPlayers();
+        this.age = boardGameDTO.getAge();
+        this.playtime = boardGameDTO.getPlaytime();
+        this.reviewLink = boardGameDTO.getReviewLink();
+        this.countryOfManufacture = boardGameDTO.getCountryOfManufacture();
     }
 
     @Id
@@ -29,11 +33,17 @@ public class BoardGame {
     @Column(name = "board_game_id")
     private Integer id;
     private String title;
+    @Column(length = 2048)
     private String description;
     private String publisher;
-    private LocalDate releaseDate;
+    private String releaseDate;
     private String category;
     private BigDecimal price;
     private String previewImage;
+    private Integer numberOfPlayers;
+    private Integer age;
+    private String playtime;
+    private String reviewLink;
+    private String countryOfManufacture;
 }
 
