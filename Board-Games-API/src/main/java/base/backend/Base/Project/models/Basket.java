@@ -21,10 +21,6 @@ public class Basket {
     @Column(name = "basket_id")
     private Integer basketId;
 
-    @ManyToOne
-    @JoinColumn(name = "basket_id", nullable = false, insertable = false, updatable = false)
-    private Basket basket;
-
     @Column(name = "user_id")
     private Integer userId;
 
