@@ -41,9 +41,9 @@ public class BoardGameOnBasketController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/by-basket/{basketId}")
-    public ResponseEntity<List<BoardGameOnBasketDTO>> getBoardGamesOnBasketByBasketId(@PathVariable Integer basketId) {
-        List<BoardGameOnBasket> boardGamesOnBasket = boardGameOnBasketService.getBoardGamesOnBasketByBasketId(basketId);
+    @GetMapping("/by-user/{userId}")
+    public ResponseEntity<List<BoardGameOnBasketDTO>> getBoardGamesOnBasketByUserId(@PathVariable Integer userId) {
+        List<BoardGameOnBasket> boardGamesOnBasket = boardGameOnBasketService.getBoardGamesOnBasketByUserId(userId);
         List<BoardGameOnBasketDTO> boardGameOnBasketDTOs = boardGamesOnBasket.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());

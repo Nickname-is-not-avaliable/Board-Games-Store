@@ -13,13 +13,13 @@ import lombok.Setter;
 public class BoardGameOnBasketDTO {
     public BoardGameOnBasketDTO(BoardGameOnBasket boardGameOnBasket) {
         this.boardGameOnBasketId = boardGameOnBasket.getBoardGameOnBasketId();
-        this.basketId = boardGameOnBasket.getBasketId();
+        this.userId = boardGameOnBasket.getUserId();
         this.boardGameId = boardGameOnBasket.getBoardGameId();
         this.quantity = boardGameOnBasket.getQuantity();
     }
 
     private Integer boardGameOnBasketId;
-    private Integer basketId;
+    private Integer userId;
     private Integer boardGameId;
     private Integer quantity;
 }

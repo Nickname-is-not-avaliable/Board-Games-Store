@@ -8,5 +8,5 @@ import java.util.List;
 
 @RepositoryRestResource(exported = false)
 public interface BoardGameOnBasketRepository extends JpaRepository<BoardGameOnBasket, Integer> {
-    List<BoardGameOnBasket> findByBasketId(Integer basketId);
+    List<BoardGameOnBasket> findByUserId(Integer userId);
 }

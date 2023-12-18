@@ -28,8 +28,8 @@ public class BoardGameOnBasketService {
         return boardGameOnBasketRepository.findById(id);
     }
 
-    public List<BoardGameOnBasket> getBoardGamesOnBasketByBasketId(Integer basketId) {
-        return boardGameOnBasketRepository.findByBasketId(basketId);
+    public List<BoardGameOnBasket> getBoardGamesOnBasketByUserId(Integer basketId) {
+        return boardGameOnBasketRepository.findByUserId(basketId);
     }
 
     public BoardGameOnBasket createBoardGameOnBasket(BoardGameOnBasketDTO boardGameOnBasketDTO) {
@@ -41,10 +41,6 @@ public class BoardGameOnBasketService {
         BoardGameOnBasket existingBoardGameOnBasket = boardGameOnBasketRepository
                 .findById(id)
                 .orElseThrow(this::boardGameOnBasketNotFound);
-
-        if (updates.containsKey("basketId")) {
-            existingBoardGameOnBasket.setBasketId((Integer) updates.get("basketId"));
-        }
 
         if (updates.containsKey("boardGameId")) {
             existingBoardGameOnBasket.setBoardGameId((Integer) updates.get("boardGameId"));

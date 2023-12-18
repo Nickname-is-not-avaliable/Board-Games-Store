@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class BoardGameOnBasket {
     public BoardGameOnBasket(BoardGameOnBasketDTO boardGameOnBasketDTO) {
         this.boardGameOnBasketId = boardGameOnBasketDTO.getBoardGameOnBasketId();
-        this.basketId = boardGameOnBasketDTO.getBasketId();
+        this.userId = boardGameOnBasketDTO.getUserId();
         this.boardGameId = boardGameOnBasketDTO.getBoardGameId();
         this.quantity = boardGameOnBasketDTO.getQuantity();
     }
@@ -21,11 +21,11 @@ public class BoardGameOnBasket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_game_on_basket_id")
     private Integer boardGameOnBasketId;
-    @Column(name = "basket_id")
-    private Integer basketId;
+    @Column(name = "user_id")
+    private Integer userId;
     @ManyToOne
-    @JoinColumn(name = "basket_id", nullable = false, insertable = false, updatable = false)
-    private Basket basket;
+    @JoinColumn(name = "user_id", nullable = false, insertable = false, updatable = false)
+    private User user;
     @Column(name = "board_game_id")
     private Integer boardGameId;
     private Integer quantity;
