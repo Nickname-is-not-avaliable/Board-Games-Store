@@ -2,11 +2,11 @@ if (getCookieValue("role") === "ADMIN") {
 chandgePageElement('sidebar','Пользователи','users.html');
 }
 
-if (getCookieValue("role") === "ADMIN" || getCookieValue("role") === "ADMIN") {
-chandgePageElement('enter','Настройки','settings.html');
+if (getCookieValue("role") === "ADMIN" || getCookieValue("role") === "USER") {
+chandgePageElement('enter','Профиль','profile.html');
 }
 
-if (window.location.pathname.endsWith("settings.html")) {
+if (window.location.pathname.endsWith("profile.html")) {
     chandgePageElement('enter','Выйти','logout.html');
     const divElement = document.querySelector(`#enter`);
 }

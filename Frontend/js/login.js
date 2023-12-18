@@ -18,7 +18,7 @@ document
                     document.cookie = `id=${data.id}; path=/`;
                     document.cookie = `role=${data.role}; path=/`;
 
-                        window.location.href = "filmList.html";
+                        window.location.href = "catalog.html";
 
                     document.getElementById("loginMessage").textContent =
                         "Авторизация успешна.";

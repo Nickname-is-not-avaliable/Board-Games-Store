@@ -1,37 +1,72 @@
 function loadPage() {
     const currentURL = window.location.href;
     const urlObject = new URL(currentURL);
-    const filmId = urlObject.searchParams.get("id");
+    const productId = urlObject.searchParams.get("id");
 
-    fetchAPI(`movies/${filmId}`, data => {
+    fetchAPI(`board-games/${productId}`, data => {
         const imgElement = document.querySelector("#previewImage");
         imgElement.src = data.previewImage;
         imgElement.alt = data.title;
 
         const vidElement = document.querySelector("#trailerLink");
-        vidElement.src = data.trailerLink;
+        vidElement.src = data.reviewLink;
 
-        const positiveReviewsPercentage = parseInt(data.positiveReviewsPercentage);
-
-        loadInformationById("positiveReviewsPercentage", positiveReviewsPercentage + "% положительных отзывов", "span");
-        loadInformationById("releaseYear", data.releaseYear, "span");
+        loadInformationById("releaseYear", data.releaseDate, "span");
         loadInformationById("description", data.description, "p");
-        loadInformationById("genre", data.genre, "span");
-        loadInformationById("country", data.country, "span");
-        loadInformationById("directors", data.directors, "span");
-        loadInformationById("actors", data.actors, "span");
-        loadInformationById("runtime", data.runtime + " мин", "span");
-        loadInformationById("languages", data.languages, "span");
+        loadInformationById("category", data.category, "category");
+        loadInformationById("price", data.price, "span");
+        loadInformationById("publisher", data.publisher, "span");
+        loadInformationById("numberOfPlayers", data.numberOfPlayers, "span");
+        loadInformationById("playtime", data.playtime + " мин", "span");
+        loadInformationById("countryOfManufacture", data.countryOfManufacture, "span");
+        loadInformationById("age", data.age + "+ лет", "span");
         loadInformationByClass("title", data.title, "span");
         loadComments(data.id);
 
-        document.title = `${data.title} (${data.releaseYear})`;
+        document.title = `${data.title}`;
+
+        fetch(`http://localhost:8080/api/stocks/by-board-game/${productId}`)
+            .then(response => response.json())
+            .then(stockDataArray => {
+                const totalQuantity = stockDataArray.reduce((total, stockData) => {
+                    return total + (stockData.quantity || 0);
+                }, 0);
+
+                const buyButtonContainer = document.getElementById("buyButtonContainer");
+
+                const button = document.createElement("a");
+                button.classList.add("btn", "ny-img");
+
+                if (totalQuantity > 0) {
+                    button.classList.add("btn-primary");
+                    button.textContent = "КУПИТЬ";
+                    button.addEventListener("click", handleBuyButtonClick);
+                } else {
+                    button.classList.add("btn-outline-success");
+                    button.textContent = "ПРЕДЗАКАЗ";
+                    button.addEventListener("click", handlePreorderButtonClick);
+                }
+
+                buyButtonContainer.appendChild(button);
+            })
+            .catch(error => {
+                console.error("Error fetching quantity information:", error);
+                console.log("Network error details:", error.message);
+            });
+
+        function handleBuyButtonClick() {
+            console.log("Buy button clicked!");
+        }
+
+        function handlePreorderButtonClick() {
+            console.log("Preorder button clicked!");
+        }
     });
 
 }
 
-function loadComments(movieId) {
-    const endpoint = `ratings/byMovieId/${movieId}`;
+function loadComments(productId) {
+    const endpoint = `comments/by-board-game/${productId}`;
     fetchAPI(endpoint, updateComments);
 }
 
@@ -59,10 +94,7 @@ function updateComments(data) {
 
         const commentOne = `
             <div class="comm-one nowrap">
-                <span class="comm-author js-author">${commentary.fullName}</span>
-                <div class="comm-complaint">
-                    <span class="fas fa-exclamation-triangle"></span>
-                </div>
+                <span class="comm-author js-author">${commentary.username}</span>
             </div>
         `;
 
@@ -71,7 +103,7 @@ function updateComments(data) {
 
         const commentText = document.createElement('div');
         commentText.id = `comm-id-${commentary.id}`;
-        commentText.textContent = commentary.comment;
+        commentText.textContent = commentary.text;
 
         const deleteButton = document.createElement('button');
 
@@ -107,25 +139,23 @@ function addComment(event) {
     event.preventDefault();
     const currentURL = window.location.href;
     const urlObject = new URL(currentURL);
-    const movieId = urlObject.searchParams.get("id");
+    const boardGameId = urlObject.searchParams.get("id");
     const userId = getCookieValue("id");
     const commentText = document.getElementById('comments').value;
-    const liked = true;
-    console.log("http://localhost:8080/api/ratings")
+    console.log("http://localhost:8080/api/comments")
     console.log(JSON.stringify({
-        movieId: movieId, userId: userId, comment: commentText, liked: liked
+        boardGameId: boardGameId, userId: userId, text: commentText
     }));
     if (getCookieValue('id')) {
-        fetch("http://localhost:8080/api/ratings", {
+        fetch("http://localhost:8080/api/comments", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                movieId: movieId,
+                boardGameId: boardGameId,
                 userId: userId,
-                liked: liked,
-                comment: commentText
+                text: commentText
             })
 
         }).then((response) => {

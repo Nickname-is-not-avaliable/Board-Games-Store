@@ -8,12 +8,12 @@ function updateUsers() {
             const row = document.createElement("tr");
             row.innerHTML = `
                   <td>${i}</td>
-                  <td>${user.fullName}</td>
+                  <td>${user.username}</td>
                   <td>${user.email}</td>
-                  <td>${user.dateOfBirth}</td>
+                  <td>${user.dateOfRegistration}</td>
                   <td>
-                      <button class="btn btn-outline-light" type="button" data-bs-toggle="modal" data-bs-target="#editUserModal" data-bs-whatever="@getbootstrap" onclick="showEditUserModal(${user.id})">Редактировать</button>
-                      <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteUserModal" onclick="showDeleteUserModal(${user.id})">Удалить</button>
+                      <button class="btn btn-outline-light" type="button" data-bs-toggle="modal" data-bs-target="#editUserModal" data-bs-whatever="@getbootstrap" onclick="showEditUserModal(${user.userId})">Редактировать</button>
+                      <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteUserModal" onclick="showDeleteUserModal(${user.userId})">Удалить</button>
                   </td>
               `;
             tableBody.appendChild(row);
@@ -28,8 +28,8 @@ function showEditUserModal(userId) {
     fetch(`http://localhost:8080/api/users/${userId}`)
         .then((response) => response.json())
         .then((userData) => {
-            document.getElementById("editUserId").value = userData.id;
-            document.getElementById("editUserFullName").value = userData.fullName;
+            document.getElementById("editUserId").value = userData.userId;
+            document.getElementById("editUsername").value = userData.username;
             document.getElementById("editUserPassword").value = "oleg";
             document.getElementById("editUserEmail").value = userData.email;
             document.getElementById("editUserRole").value = userData.role;
@@ -37,13 +37,13 @@ function showEditUserModal(userId) {
 
     submitEditButton.onclick = function () {
         const userId = document.getElementById("editUserId").value;
-        const fullName = document.getElementById("editUserFullName").value;
-        console.log(fullName);
+        const username = document.getElementById("editUsername").value;
+        console.log(username);
         const password = document.getElementById("editUserPassword").value;
         const email = document.getElementById("editUserEmail").value;
         const role = document.getElementById("editUserRole").value;
 
-        editUser(userId, fullName, password, email, role);
+        editUser(userId, username, password, email, role);
     };
 
 
@@ -51,14 +51,14 @@ function showEditUserModal(userId) {
 }
 
 
-function editUser(userId, fullName, password, email, role) {
+function editUser(userId, username, password, email, role) {
     fetch(`http://localhost:8080/api/users/${userId}`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            fullName: fullName,
+            username: username,
             password: password,
             email: email,
             role: role

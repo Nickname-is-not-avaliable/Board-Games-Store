@@ -6,7 +6,7 @@ async function uploadFile() {
     formData.append('file', file);
 
     try {
-        const response = await fetch("http://localhost:8080/api/uploadFile", {
+        const response = await fetch("http://localhost:8080/api/files/uploadFile", {
             method: "POST",
             body: formData
         });
@@ -21,33 +21,22 @@ document
         event.preventDefault();
         const title = document.getElementById("title").value;
         const description = document.getElementById("description").value;
-        const genre = document.getElementById("genre").value;
-        const releaseYear = parseInt(document.getElementById("releaseYear").value);
-        const country = document.getElementById("country").value;
-        const directors = document.getElementById("directors").value;
-        const actors = document.getElementById("actors").value;
-        const runtime = parseInt(document.getElementById("runtime").value);
-        const languages = document.getElementById("languages").value;
-        const trailerLink = document.getElementById("trailerLink").value;
+        const category = document.getElementById("category").value;
+        const releaseDate = document.getElementById("releaseDate").value;
+        const countryOfManufacture = document.getElementById("countryOfManufacture").value;
+        const price = parseFloat(document.getElementById("price").value);
+        const numberOfPlayers = parseInt(document.getElementById("numberOfPlayers").value);
+        const age = parseInt(document.getElementById("age").value);
+        const playtime = document.getElementById("playtime").value;
+        const publisher = document.getElementById("publisher").value;
+        const reviewLink = document.getElementById("reviewLink").value;
 
         const inputElement = document.getElementById("previewImage");
         const selectedFile = inputElement.files[0];
 
         const previewImage = selectedFile.name;
 
-       /* console.log(title)
-        console.log(description)
-        console.log(genre)
-        console.log(releaseYear)
-        console.log(country)
-        console.log(directors)
-        console.log(actors)
-        console.log(runtime)
-        console.log(languages)
-        console.log(trailerLink)
-        console.log(previewImage);*/
-
-        fetch("http://localhost:8080/api/movies", {
+        fetch("http://localhost:8080/api/board-games", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -55,19 +44,20 @@ document
             body: JSON.stringify({
                 title: title,
                 description: description,
-                genre: genre,
-                releaseYear: releaseYear,
-                country: country,
-                directors: directors,
-                actors: actors,
-                runtime: runtime,
-                languages: languages,
-                trailerLink: trailerLink,
+                publisher: publisher,
+                category: category,
+                releaseDate: releaseDate,
+                countryOfManufacture: countryOfManufacture,
+                price: price,
+                numberOfPlayers: numberOfPlayers,
+                age: age,
+                playtime: playtime,
+                reviewLink: reviewLink,
                 previewImage: "http://localhost:8080/api/files/search/" + previewImage
             })
         }).then((response) => {
             if (response.status === 201) {
-                alert("Фильм добавлен успешно");
+                alert("Товар добавлен успешно");
             }
             else
             {

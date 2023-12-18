@@ -22,12 +22,12 @@ document
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({email:email, password:password, role:"USER"}),
+            body: JSON.stringify({email:email, password:password, role:"USER", username:`Инкогнито`}),
         })
             .then((response) => {
                 if (response.status === 201) {
                     response.json().then((data) => {
-                        document.cookie = `id=${data.id}; path=/`;
+                        document.cookie = `id=${data.userId}; path=/`;
                         document.cookie = `role=${data.role}; path=/`;
                         window.location.href = "landing.html";
                     })
