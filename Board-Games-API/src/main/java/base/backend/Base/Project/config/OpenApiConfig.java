@@ -23,9 +23,9 @@ public class OpenApiConfig {
           .version("0.0.1")
           .contact(
             new Contact()
-              .name("Tsiunchyk Daniil")
+              .name("Vladislav Torchilo")
               .email("fcad.td@gmail.com")
-              .url("https://www.linkedin.com/in/daniil-tsiunchyk/")
+              .url("")
           )
       );
   }

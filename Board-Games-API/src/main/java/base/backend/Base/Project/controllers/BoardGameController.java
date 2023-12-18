@@ -3,6 +3,7 @@ package base.backend.Base.Project.controllers;
 import base.backend.Base.Project.models.BoardGame;
 import base.backend.Base.Project.models.dto.BoardGameDTO;
 import base.backend.Base.Project.services.BoardGameService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/board-games")
+@Tag(name = "BoardGames")
 public class BoardGameController {
 
     private final BoardGameService boardGameService;
