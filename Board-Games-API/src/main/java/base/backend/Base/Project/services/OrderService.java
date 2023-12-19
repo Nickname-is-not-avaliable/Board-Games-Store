@@ -90,7 +90,4 @@ public class OrderService {
     jdbcTemplate.update(sql, orderId);
   }
 
-  private ResponseStatusException orderNotFound() {
-    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found");
-  }
 }

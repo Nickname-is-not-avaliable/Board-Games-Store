@@ -5,8 +5,6 @@ import base.backend.Base.Project.models.dto.CommentDTO;
 import base.backend.Base.Project.services.CommentService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

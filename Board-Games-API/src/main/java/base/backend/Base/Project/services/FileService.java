@@ -3,8 +3,6 @@ package base.backend.Base.Project.services;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.Objects;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -45,15 +43,6 @@ public class FileService {
         e
       );
     }
-  }
-
-  public Resource loadFile(String fileName) throws IOException {
-    Path filePath = Paths
-      .get(uploadDir)
-      .resolve(fileName)
-      .toAbsolutePath()
-      .normalize();
-    return new UrlResource(filePath.toUri());
   }
 
   public Boolean removeFile(String fileName) {

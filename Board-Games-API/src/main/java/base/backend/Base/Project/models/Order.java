@@ -1,6 +1,5 @@
 package base.backend.Base.Project.models;
 
-import base.backend.Base.Project.models.dto.OrderDTO;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -12,15 +11,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "orders")
 public class Order {
-
-  public Order(OrderDTO orderDTO) {
-    this.orderId = orderDTO.getOrderId();
-    this.userId = orderDTO.getUserId();
-    this.orderDate = orderDTO.getOrderDate();
-    this.totalPrice = orderDTO.getTotalPrice();
-    this.orderDetails = orderDTO.getOrderDetails();
-    this.status = orderDTO.getStatus();
-  }
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,6 +32,7 @@ public class Order {
   @Column(name = "order_date")
   private LocalDateTime orderDate;
 
+  @Column(name = "order_details")
   private String orderDetails;
 
   @Column(name = "total_price")

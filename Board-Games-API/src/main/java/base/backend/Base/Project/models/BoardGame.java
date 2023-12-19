@@ -1,6 +1,5 @@
 package base.backend.Base.Project.models;
 
-import base.backend.Base.Project.models.dto.BoardGameDTO;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import lombok.Data;
@@ -11,22 +10,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "board_games")
 public class BoardGame {
-
-  public BoardGame(BoardGameDTO boardGameDTO) {
-    this.boardGameId = boardGameDTO.getId();
-    this.title = boardGameDTO.getTitle();
-    this.description = boardGameDTO.getDescription();
-    this.publisher = boardGameDTO.getPublisher();
-    this.releaseDate = boardGameDTO.getReleaseDate();
-    this.category = boardGameDTO.getCategory();
-    this.price = boardGameDTO.getPrice();
-    this.previewImage = boardGameDTO.getPreviewImage();
-    this.numberOfPlayers = boardGameDTO.getNumberOfPlayers();
-    this.age = boardGameDTO.getAge();
-    this.playtime = boardGameDTO.getPlaytime();
-    this.reviewLink = boardGameDTO.getReviewLink();
-    this.countryOfManufacture = boardGameDTO.getCountryOfManufacture();
-  }
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

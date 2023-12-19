@@ -60,7 +60,7 @@ public class UserService {
   public User createUser(UserDTO userDTO) {
     String hashedPassword = DigestUtils.sha256Hex(userDTO.getPassword());
     String sql =
-      "INSERT INTO users (email, username, password, date_of_registration, role) VALUES (?, ?, ?, ?, ?::user_role) RETURNING user_id";
+      "INSERT INTO users (email, username, password, date_of_registration, role) VALUES (?, ?, ?, ?, ?) RETURNING user_id";
     Integer newId = jdbcTemplate.queryForObject(
       sql,
       Integer.class,

@@ -1,6 +1,5 @@
 package base.backend.Base.Project.models;
 
-import base.backend.Base.Project.models.dto.CommentDTO;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import lombok.Data;
