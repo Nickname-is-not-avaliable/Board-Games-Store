@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @Entity
@@ -18,4 +20,7 @@ public class Store {
   private String address;
   private Double latitude;
   private Double longitude;
+
+  @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Stock> stocks;
 }

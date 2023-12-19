@@ -3,6 +3,8 @@ package base.backend.Base.Project.models;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
+
 import lombok.*;
 
 @Data
@@ -29,4 +31,10 @@ public class User {
     USER,
     ADMIN,
   }
+  
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Comment> comments;
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Order> orders;
 }
