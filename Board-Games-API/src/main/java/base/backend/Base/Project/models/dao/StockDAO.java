@@ -1,4 +1,4 @@
-package base.backend.Base.Project.services;
+package base.backend.Base.Project.models.dao;
 
 import base.backend.Base.Project.models.Stock;
 import base.backend.Base.Project.models.dto.StockDTO;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
-public class StockService {
+public class StockDAO {
 
   @Autowired
   private JdbcTemplate jdbcTemplate;

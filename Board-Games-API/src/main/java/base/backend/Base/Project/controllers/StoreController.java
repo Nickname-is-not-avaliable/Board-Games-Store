@@ -2,7 +2,7 @@ package base.backend.Base.Project.controllers;
 
 import base.backend.Base.Project.models.Store;
 import base.backend.Base.Project.models.dto.StoreDTO;
-import base.backend.Base.Project.services.StoreService;
+import base.backend.Base.Project.models.dao.StoreDAO;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,16 +16,16 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Stores")
 public class StoreController {
 
-  private final StoreService storeService;
+  private final StoreDAO storeDAO;
 
   @Autowired
-  public StoreController(StoreService storeService) {
-    this.storeService = storeService;
+  public StoreController(StoreDAO storeDAO) {
+    this.storeDAO = storeDAO;
   }
 
   @GetMapping
   public ResponseEntity<List<StoreDTO>> getAllStores() {
-    List<Store> stores = storeService.getAllStores();
+    List<Store> stores = storeDAO.getAllStores();
     List<StoreDTO> storeDTOs = stores
       .stream()
       .map(this::convertToDTO)
@@ -35,7 +35,7 @@ public class StoreController {
 
   @GetMapping("/{id}")
   public ResponseEntity<StoreDTO> getStoreById(@PathVariable Integer id) {
-    Store store = storeService.getStoreById(id);
+    Store store = storeDAO.getStoreById(id);
     if (store != null) {
       return ResponseEntity.ok(convertToDTO(store));
     } else {
@@ -45,14 +45,14 @@ public class StoreController {
 
   @PostMapping
   public ResponseEntity<StoreDTO> createStore(@RequestBody StoreDTO storeDTO) {
-    Store newStore = storeService.createStore(storeDTO);
+    Store newStore = storeDAO.createStore(storeDTO);
     StoreDTO newStoreDTO = convertToDTO(newStore);
     return ResponseEntity.status(HttpStatus.CREATED).body(newStoreDTO);
   }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteStore(@PathVariable Integer id) {
-    storeService.deleteStore(id);
+    storeDAO.deleteStore(id);
     return ResponseEntity.noContent().build();
   }
 

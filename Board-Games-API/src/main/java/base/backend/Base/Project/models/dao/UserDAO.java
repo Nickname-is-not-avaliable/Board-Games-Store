@@ -1,4 +1,4 @@
-package base.backend.Base.Project.services;
+package base.backend.Base.Project.models.dao;
 
 import base.backend.Base.Project.models.User;
 import base.backend.Base.Project.models.dto.UserDTO;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
-public class UserService {
+public class UserDAO {
 
   @Autowired
   private JdbcTemplate jdbcTemplate;

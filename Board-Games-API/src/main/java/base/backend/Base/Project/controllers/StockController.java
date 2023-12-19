@@ -2,7 +2,7 @@ package base.backend.Base.Project.controllers;
 
 import base.backend.Base.Project.models.Stock;
 import base.backend.Base.Project.models.dto.StockDTO;
-import base.backend.Base.Project.services.StockService;
+import base.backend.Base.Project.models.dao.StockDAO;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.Map;
@@ -17,16 +17,16 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Stocks")
 public class StockController {
 
-  private final StockService stockService;
+  private final StockDAO stockDAO;
 
   @Autowired
-  public StockController(StockService stockService) {
-    this.stockService = stockService;
+  public StockController(StockDAO stockDAO) {
+    this.stockDAO = stockDAO;
   }
 
   @GetMapping
   public ResponseEntity<List<StockDTO>> getAllStocks() {
-    List<Stock> stocks = stockService.getAllStocks();
+    List<Stock> stocks = stockDAO.getAllStocks();
     List<StockDTO> stockDTOs = stocks
       .stream()
       .map(this::convertToDTO)
@@ -36,7 +36,7 @@ public class StockController {
 
   @GetMapping("/{id}")
   public ResponseEntity<StockDTO> getStockById(@PathVariable Integer id) {
-    Stock stock = stockService.getStockById(id);
+    Stock stock = stockDAO.getStockById(id);
     if (stock != null) {
       return ResponseEntity.ok(convertToDTO(stock));
     } else {
@@ -48,7 +48,7 @@ public class StockController {
   public ResponseEntity<List<StockDTO>> getStocksByBoardGameId(
     @PathVariable Integer boardGameId
   ) {
-    List<Stock> stocks = stockService.getStocksByBoardGameId(boardGameId);
+    List<Stock> stocks = stockDAO.getStocksByBoardGameId(boardGameId);
     List<StockDTO> stockDTOs = stocks
       .stream()
       .map(this::convertToDTO)
@@ -60,7 +60,7 @@ public class StockController {
   public ResponseEntity<List<StockDTO>> getStocksByStoreId(
     @PathVariable Integer storeId
   ) {
-    List<Stock> stocks = stockService.getStocksByStoreId(storeId);
+    List<Stock> stocks = stockDAO.getStocksByStoreId(storeId);
     List<StockDTO> stockDTOs = stocks
       .stream()
       .map(this::convertToDTO)
@@ -70,7 +70,7 @@ public class StockController {
 
   @PostMapping
   public ResponseEntity<StockDTO> createStock(@RequestBody StockDTO stockDTO) {
-    Stock newStock = stockService.createStock(stockDTO);
+    Stock newStock = stockDAO.createStock(stockDTO);
     StockDTO newStockDTO = convertToDTO(newStock);
     return ResponseEntity.status(HttpStatus.CREATED).body(newStockDTO);
   }
@@ -80,14 +80,14 @@ public class StockController {
     @PathVariable Integer id,
     @RequestBody Map<String, Object> updates
   ) {
-    Stock updatedStock = stockService.updateStock(id, updates);
+    Stock updatedStock = stockDAO.updateStock(id, updates);
     StockDTO updatedStockDTO = convertToDTO(updatedStock);
     return ResponseEntity.ok(updatedStockDTO);
   }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteStock(@PathVariable Integer id) {
-    stockService.deleteStock(id);
+    stockDAO.deleteStock(id);
     return ResponseEntity.noContent().build();
   }
 

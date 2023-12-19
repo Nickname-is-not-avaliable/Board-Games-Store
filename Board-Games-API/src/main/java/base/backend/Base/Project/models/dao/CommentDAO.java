@@ -1,4 +1,4 @@
-package base.backend.Base.Project.services;
+package base.backend.Base.Project.models.dao;
 
 import base.backend.Base.Project.models.Comment;
 import base.backend.Base.Project.models.dto.CommentDTO;
@@ -10,7 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CommentService {
+public class CommentDAO {
 
   @Autowired
   private JdbcTemplate jdbcTemplate;

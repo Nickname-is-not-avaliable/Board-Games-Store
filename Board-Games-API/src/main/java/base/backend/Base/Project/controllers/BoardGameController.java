@@ -2,7 +2,7 @@ package base.backend.Base.Project.controllers;
 
 import base.backend.Base.Project.models.BoardGame;
 import base.backend.Base.Project.models.dto.BoardGameDTO;
-import base.backend.Base.Project.services.BoardGameService;
+import base.backend.Base.Project.models.dao.BoardGameDAO;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.Map;
@@ -17,16 +17,16 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "BoardGames")
 public class BoardGameController {
 
-  private final BoardGameService boardGameService;
+  private final BoardGameDAO boardGameDAO;
 
   @Autowired
-  public BoardGameController(BoardGameService boardGameService) {
-    this.boardGameService = boardGameService;
+  public BoardGameController(BoardGameDAO boardGameDAO) {
+    this.boardGameDAO = boardGameDAO;
   }
 
   @GetMapping
   public ResponseEntity<List<BoardGameDTO>> getAllBoardGames() {
-    List<BoardGame> boardGames = boardGameService.getAllBoardGames();
+    List<BoardGame> boardGames = boardGameDAO.getAllBoardGames();
     List<BoardGameDTO> boardGameDTOs = boardGames
       .stream()
       .map(this::convertToDTO)
@@ -38,7 +38,7 @@ public class BoardGameController {
   public ResponseEntity<BoardGameDTO> getBoardGameById(
     @PathVariable Integer id
   ) {
-    BoardGame boardGame = boardGameService.getBoardGameById(id);
+    BoardGame boardGame = boardGameDAO.getBoardGameById(id);
     if (boardGame != null) {
       return ResponseEntity.ok(convertToDTO(boardGame));
     } else {
@@ -50,7 +50,7 @@ public class BoardGameController {
   public ResponseEntity<List<BoardGameDTO>> getBoardGamesByCategory(
     @PathVariable String category
   ) {
-    List<BoardGame> boardGames = boardGameService.getBoardGamesByCategory(
+    List<BoardGame> boardGames = boardGameDAO.getBoardGamesByCategory(
       category
     );
     List<BoardGameDTO> boardGameDTOs = boardGames
@@ -64,7 +64,7 @@ public class BoardGameController {
   public ResponseEntity<BoardGameDTO> createBoardGame(
     @RequestBody BoardGameDTO boardGameDTO
   ) {
-    BoardGame newBoardGame = boardGameService.createBoardGame(boardGameDTO);
+    BoardGame newBoardGame = boardGameDAO.createBoardGame(boardGameDTO);
     BoardGameDTO newBoardGameDTO = convertToDTO(newBoardGame);
     return ResponseEntity.status(HttpStatus.CREATED).body(newBoardGameDTO);
   }
@@ -74,14 +74,14 @@ public class BoardGameController {
     @PathVariable Integer id,
     @RequestBody Map<String, Object> updates
   ) {
-    BoardGame updatedBoardGame = boardGameService.updateBoardGame(id, updates);
+    BoardGame updatedBoardGame = boardGameDAO.updateBoardGame(id, updates);
     BoardGameDTO updatedBoardGameDTO = convertToDTO(updatedBoardGame);
     return ResponseEntity.ok(updatedBoardGameDTO);
   }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteBoardGame(@PathVariable Integer id) {
-    boardGameService.deleteBoardGame(id);
+    boardGameDAO.deleteBoardGame(id);
     return ResponseEntity.noContent().build();
   }
 
@@ -89,7 +89,7 @@ public class BoardGameController {
   public ResponseEntity<List<BoardGameDTO>> getBoardGamesByTitleContaining(
     @RequestParam String searchString
   ) {
-    List<BoardGameDTO> movieDTOs = boardGameService
+    List<BoardGameDTO> movieDTOs = boardGameDAO
       .getBoardGamesByTitleContaining(searchString)
       .stream()
       .map(BoardGameDTO::new)

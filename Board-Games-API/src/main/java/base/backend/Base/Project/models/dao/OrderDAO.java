@@ -1,4 +1,4 @@
-package base.backend.Base.Project.services;
+package base.backend.Base.Project.models.dao;
 
 import base.backend.Base.Project.models.Order;
 import base.backend.Base.Project.models.dto.OrderDTO;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
-public class OrderService {
+public class OrderDAO {
 
   @Autowired
   private JdbcTemplate jdbcTemplate;

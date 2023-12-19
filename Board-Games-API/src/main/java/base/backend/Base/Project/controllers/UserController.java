@@ -2,7 +2,7 @@ package base.backend.Base.Project.controllers;
 
 import base.backend.Base.Project.models.User;
 import base.backend.Base.Project.models.dto.UserDTO;
-import base.backend.Base.Project.services.UserService;
+import base.backend.Base.Project.models.dao.UserDAO;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.Map;
@@ -17,16 +17,16 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Users")
 public class UserController {
 
-  private final UserService userService;
+  private final UserDAO userDAO;
 
   @Autowired
-  public UserController(UserService userService) {
-    this.userService = userService;
+  public UserController(UserDAO userDAO) {
+    this.userDAO = userDAO;
   }
 
   @GetMapping
   public ResponseEntity<List<UserDTO>> getAllUsers() {
-    List<User> users = userService.getAllUsers();
+    List<User> users = userDAO.getAllUsers();
     List<UserDTO> userDTOs = users
       .stream()
       .map(this::convertToDTO)
@@ -36,7 +36,7 @@ public class UserController {
 
   @GetMapping("/{id}")
   public ResponseEntity<UserDTO> getUserById(@PathVariable Integer id) {
-    User user = userService.getUserById(id);
+    User user = userDAO.getUserById(id);
     if (user != null) {
       return ResponseEntity.ok(convertToDTO(user));
     } else {
@@ -46,7 +46,7 @@ public class UserController {
 
   @PostMapping("/login")
   public ResponseEntity<User> login(@RequestBody User userDTO) {
-    User user = userService.authenticate(
+    User user = userDAO.authenticate(
       userDTO.getEmail(),
       userDTO.getPassword()
     );
@@ -58,7 +58,7 @@ public class UserController {
 
   @PostMapping
   public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
-    User newUser = userService.createUser(userDTO);
+    User newUser = userDAO.createUser(userDTO);
     UserDTO newUserDTO = convertToDTO(newUser);
     return ResponseEntity.status(HttpStatus.CREATED).body(newUserDTO);
   }
@@ -68,14 +68,14 @@ public class UserController {
     @PathVariable Integer id,
     @RequestBody Map<String, Object> updates
   ) {
-    User updatedUser = userService.updateUser(id, updates);
+    User updatedUser = userDAO.updateUser(id, updates);
     UserDTO updatedUserDTO = convertToDTO(updatedUser);
     return ResponseEntity.ok(updatedUserDTO);
   }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
-    userService.deleteUser(id);
+    userDAO.deleteUser(id);
     return ResponseEntity.noContent().build();
   }
 

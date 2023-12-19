@@ -2,7 +2,7 @@ package base.backend.Base.Project.controllers;
 
 import base.backend.Base.Project.models.Comment;
 import base.backend.Base.Project.models.dto.CommentDTO;
-import base.backend.Base.Project.services.CommentService;
+import base.backend.Base.Project.models.dao.CommentDAO;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,16 +16,16 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Comments")
 public class CommentController {
 
-  private final CommentService commentService;
+  private final CommentDAO commentDAO;
 
   @Autowired
-  public CommentController(CommentService commentService) {
-    this.commentService = commentService;
+  public CommentController(CommentDAO commentDAO) {
+    this.commentDAO = commentDAO;
   }
 
   @GetMapping
   public ResponseEntity<List<CommentDTO>> getAllComments() {
-    List<Comment> comments = commentService.getAllComments();
+    List<Comment> comments = commentDAO.getAllComments();
     List<CommentDTO> commentDTOs = comments
       .stream()
       .map(this::convertToDTO)
@@ -35,7 +35,7 @@ public class CommentController {
 
   @GetMapping("/{id}")
   public ResponseEntity<CommentDTO> getCommentById(@PathVariable Integer id) {
-    Comment comment = commentService.getCommentById(id);
+    Comment comment = commentDAO.getCommentById(id);
     if (comment != null) {
       return ResponseEntity.ok(convertToDTO(comment));
     } else {
@@ -47,7 +47,7 @@ public class CommentController {
   public ResponseEntity<List<CommentDTO>> getCommentsByBoardGameId(
     @PathVariable Integer boardGameId
   ) {
-    List<Comment> comments = commentService.getCommentsByBoardGameId(
+    List<Comment> comments = commentDAO.getCommentsByBoardGameId(
       boardGameId
     );
     List<CommentDTO> commentDTOs = comments
@@ -61,13 +61,13 @@ public class CommentController {
   public ResponseEntity<Void> createComment(
     @RequestBody CommentDTO commentDTO
   ) {
-    commentService.createComment(commentDTO);
+    commentDAO.createComment(commentDTO);
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteComment(@PathVariable Integer id) {
-    commentService.deleteComment(id);
+    commentDAO.deleteComment(id);
     return ResponseEntity.noContent().build();
   }
 

@@ -2,7 +2,7 @@ package base.backend.Base.Project.controllers;
 
 import base.backend.Base.Project.models.Order;
 import base.backend.Base.Project.models.dto.OrderDTO;
-import base.backend.Base.Project.services.OrderService;
+import base.backend.Base.Project.models.dao.OrderDAO;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.Map;
@@ -17,16 +17,16 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Orders")
 public class OrderController {
 
-  private final OrderService orderService;
+  private final OrderDAO orderDAO;
 
   @Autowired
-  public OrderController(OrderService orderService) {
-    this.orderService = orderService;
+  public OrderController(OrderDAO orderDAO) {
+    this.orderDAO = orderDAO;
   }
 
   @GetMapping
   public ResponseEntity<List<OrderDTO>> getAllOrders() {
-    List<Order> orders = orderService.getAllOrders();
+    List<Order> orders = orderDAO.getAllOrders();
     List<OrderDTO> orderDTOs = orders
       .stream()
       .map(this::convertToDTO)
@@ -36,7 +36,7 @@ public class OrderController {
 
   @GetMapping("/{id}")
   public ResponseEntity<OrderDTO> getOrderById(@PathVariable Integer id) {
-    Order order = orderService.getOrderById(id);
+    Order order = orderDAO.getOrderById(id);
     if (order != null) {
       return ResponseEntity.ok(convertToDTO(order));
     } else {
@@ -48,7 +48,7 @@ public class OrderController {
   public ResponseEntity<List<OrderDTO>> getOrdersByUserId(
     @PathVariable Integer userId
   ) {
-    List<Order> orders = orderService.getOrdersByUserId(userId);
+    List<Order> orders = orderDAO.getOrdersByUserId(userId);
     List<OrderDTO> orderDTOs = orders
       .stream()
       .map(this::convertToDTO)
@@ -58,7 +58,7 @@ public class OrderController {
 
   @PostMapping
   public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
-    Order newOrder = orderService.createOrder(orderDTO);
+    Order newOrder = orderDAO.createOrder(orderDTO);
     OrderDTO newOrderDTO = convertToDTO(newOrder);
     return ResponseEntity.status(HttpStatus.CREATED).body(newOrderDTO);
   }
@@ -68,14 +68,14 @@ public class OrderController {
     @PathVariable Integer id,
     @RequestBody Map<String, Object> updates
   ) {
-    Order updatedOrder = orderService.updateOrder(id, updates);
+    Order updatedOrder = orderDAO.updateOrder(id, updates);
     OrderDTO updatedOrderDTO = convertToDTO(updatedOrder);
     return ResponseEntity.ok(updatedOrderDTO);
   }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteOrder(@PathVariable Integer id) {
-    orderService.deleteOrder(id);
+    orderDAO.deleteOrder(id);
     return ResponseEntity.noContent().build();
   }
 
