@@ -11,15 +11,16 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StoreDTO {
-    public StoreDTO(Store store) {
-        this.storeId = store.getStoreId();
-        this.address = store.getAddress();
-        this.latitude = store.getLatitude();
-        this.longitude = store.getLongitude();
-    }
 
-    private Integer storeId;
-    private String address;
-    private Double latitude;
-    private Double longitude;
+  public StoreDTO(Store store) {
+    this.storeId = store.getStoreId();
+    this.address = store.getAddress();
+    this.latitude = store.getLatitude();
+    this.longitude = store.getLongitude();
+  }
+
+  private Integer storeId;
+  private String address;
+  private Double latitude;
+  private Double longitude;
 }

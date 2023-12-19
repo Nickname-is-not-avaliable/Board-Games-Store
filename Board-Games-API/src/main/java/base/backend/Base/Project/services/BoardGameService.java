@@ -2,106 +2,111 @@ package base.backend.Base.Project.services;
 
 import base.backend.Base.Project.models.BoardGame;
 import base.backend.Base.Project.models.dto.BoardGameDTO;
-import base.backend.Base.Project.repositories.BoardGameRepository;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class BoardGameService {
 
-    private final BoardGameRepository boardGameRepository;
+  @Autowired
+  private JdbcTemplate jdbcTemplate;
 
-    public BoardGameService(BoardGameRepository boardGameRepository) {
-        this.boardGameRepository = boardGameRepository;
+  @Autowired
+  private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+  public List<BoardGame> getAllBoardGames() {
+    String sql = "SELECT * FROM board_games";
+    return jdbcTemplate.query(
+      sql,
+      new BeanPropertyRowMapper<>(BoardGame.class)
+    );
+  }
+
+  public BoardGame getBoardGameById(Integer id) {
+    try {
+      String sql = "SELECT * FROM board_games WHERE board_game_id = ?";
+      return jdbcTemplate.queryForObject(
+        sql,
+        new BeanPropertyRowMapper<>(BoardGame.class),
+        id
+      );
+    } catch (EmptyResultDataAccessException e) {
+      throw new ResponseStatusException(
+        HttpStatus.NOT_FOUND,
+        "BoardGame not found"
+      );
     }
+  }
 
-    public List<BoardGame> getAllBoardGames() {
-        return boardGameRepository.findAll();
-    }
+  public List<BoardGame> getBoardGamesByCategory(String category) {
+    String sql = "SELECT * FROM board_games WHERE category = ?";
+    return jdbcTemplate.query(
+      sql,
+      new BeanPropertyRowMapper<>(BoardGame.class),
+      category
+    );
+  }
 
-    public Optional<BoardGame> getBoardGameById(Integer id) {
-        return boardGameRepository.findById(id);
-    }
+  public List<BoardGame> getBoardGamesByTitleContaining(String searchString) {
+    String sql = "SELECT * FROM board_games WHERE LOWER(title) LIKE LOWER(?)";
+    String searchPattern = "%" + searchString + "%";
+    return jdbcTemplate.query(
+      sql,
+      new BeanPropertyRowMapper<>(BoardGame.class),
+      searchPattern
+    );
+  }
 
-    public List<BoardGame> getBoardGamesByCategory(String category) {
-        return boardGameRepository.findByCategory(category);
-    }
+  public BoardGame createBoardGame(BoardGameDTO boardGameDTO) {
+    String sql =
+      "INSERT INTO board_games (title, description, publisher, release_date, category, price, preview_image, number_of_players, age, playtime, review_link, country_of_manufacture) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING board_game_id";
+    Integer newId = jdbcTemplate.queryForObject(
+      sql,
+      Integer.class,
+      boardGameDTO.getTitle(),
+      boardGameDTO.getDescription(),
+      boardGameDTO.getPublisher(),
+      boardGameDTO.getReleaseDate(),
+      boardGameDTO.getCategory(),
+      boardGameDTO.getPrice(),
+      boardGameDTO.getPreviewImage(),
+      boardGameDTO.getNumberOfPlayers(),
+      boardGameDTO.getAge(),
+      boardGameDTO.getPlaytime(),
+      boardGameDTO.getReviewLink(),
+      boardGameDTO.getCountryOfManufacture()
+    );
+    return getBoardGameById(newId);
+  }
 
-    public List<BoardGame> getBoardGamesByTitleContaining(String searchString) {
-        return boardGameRepository.findByTitleContainingIgnoreCase(searchString);
-    }
+  public BoardGame updateBoardGame(Integer id, Map<String, Object> updates) {
+    MapSqlParameterSource params = new MapSqlParameterSource();
+    StringBuilder sql = new StringBuilder("UPDATE board_games SET ");
 
-    public BoardGame createBoardGame(BoardGameDTO boardGameDTO) {
-        BoardGame newBoardGame = new BoardGame(boardGameDTO);
-        return boardGameRepository.save(newBoardGame);
-    }
+    updates.forEach((key, value) -> {
+      sql.append(key).append(" = :").append(key).append(", ");
+      params.addValue(key, value);
+    });
 
-    public BoardGame updateBoardGame(Integer id, Map<String, Object> updates) {
-        BoardGame existingBoardGame = boardGameRepository
-                .findById(id)
-                .orElseThrow(this::boardGameNotFound);
+    sql.delete(sql.length() - 2, sql.length());
+    sql.append(" WHERE board_game_id = :id");
+    params.addValue("id", id);
 
-        if (updates.containsKey("title")) {
-            existingBoardGame.setTitle((String) updates.get("title"));
-        }
+    namedParameterJdbcTemplate.update(sql.toString(), params);
+    return getBoardGameById(id);
+  }
 
-        if (updates.containsKey("description")) {
-            existingBoardGame.setDescription((String) updates.get("description"));
-        }
-
-        if (updates.containsKey("publisher")) {
-            existingBoardGame.setPublisher((String) updates.get("publisher"));
-        }
-
-        if (updates.containsKey("releaseDate")) {
-            existingBoardGame.setReleaseDate((String) updates.get("releaseDate"));
-        }
-
-        if (updates.containsKey("category")) {
-            existingBoardGame.setCategory((String) updates.get("category"));
-        }
-
-        if (updates.containsKey("price")) {
-            existingBoardGame.setPrice((BigDecimal) updates.get("price"));
-        }
-
-        if (updates.containsKey("previewImage")) {
-            existingBoardGame.setPreviewImage((String) updates.get("previewImage"));
-        }
-
-        if (updates.containsKey("numberOfPlayers")) {
-            existingBoardGame.setNumberOfPlayers((Integer) updates.get("numberOfPlayers"));
-        }
-
-        if (updates.containsKey("age")) {
-            existingBoardGame.setAge((Integer) updates.get("age"));
-        }
-
-        if (updates.containsKey("playtime")) {
-            existingBoardGame.setPlaytime((String) updates.get("playtime"));
-        }
-
-        if (updates.containsKey("reviewLink")) {
-            existingBoardGame.setReviewLink((String) updates.get("reviewLink"));
-        }
-
-        if (updates.containsKey("countryOfManufacture")) {
-            existingBoardGame.setCountryOfManufacture((String) updates.get("countryOfManufacture"));
-        }
-        return boardGameRepository.save(existingBoardGame);
-    }
-
-    public void deleteBoardGame(Integer id) {
-        boardGameRepository.deleteById(id);
-    }
-
-    private ResponseStatusException boardGameNotFound() {
-        return new ResponseStatusException(HttpStatus.NOT_FOUND, "BoardGame not found");
-    }
+  public void deleteBoardGame(Integer id) {
+    String sql = "DELETE FROM board_games WHERE board_game_id = ?";
+    jdbcTemplate.update(sql, id);
+  }
 }
