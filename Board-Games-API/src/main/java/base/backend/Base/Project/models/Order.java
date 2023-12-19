@@ -40,6 +40,6 @@ public class Order {
     private OrderStatus status;
 
     public enum OrderStatus {
-        OPENED, DELIVERY, CLOSED
+        OPENED, DELIVERY, CONFIRMED, CANCELLED, PREORDER, CART
     }
 }
