@@ -2,8 +2,6 @@ package base.backend.Base.Project.models;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
-import java.util.List;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -33,7 +31,4 @@ public class BoardGame {
   private String playtime;
   private String reviewLink;
   private String countryOfManufacture;
-
-  @OneToMany(mappedBy = "boardGame", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Comment> comments;
 }
