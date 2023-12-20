@@ -6,50 +6,34 @@ document.addEventListener("DOMContentLoaded", function () {
         const serviceStats = {};
         const salesData = {};
 
+
         fetchAPI("orders", data => {
             const filteredData = filterByStatus(data, "CONFIRMED");
-            totalOrders = filteredData.length;
 
-            for (const filteredDatum of filteredData) {
+            // Инициализация и обработка данных
+            totalOrders = filteredData.length;
+            filteredData.forEach((filteredDatum) => {
                 totalAmount += filteredDatum.totalPrice;
 
                 const orderDetail = filteredDatum.orderDetails;
-                if (orderDetail in serviceStats) {
-                    serviceStats[orderDetail]++;
-                } else {
-                    serviceStats[orderDetail] = 1;
-                }
+                serviceStats[orderDetail] = (serviceStats[orderDetail] || 0) + 1;
 
-                const date = moment(filteredDatum.orderDate);
-                const day = date.format('YYYY-MM-DD');
-                if (salesData[day]) {
-                    salesData[day] += filteredDatum.totalPrice;
-                } else {
-                    salesData[day] = filteredDatum.totalPrice;
-                }
-            }
+                const date = moment(filteredDatum.orderDate).format('YYYY-MM-DD');
+                salesData[date] = (salesData[date] || 0) + filteredDatum.totalPrice;
+            });
 
-            document.getElementById("totalOrders").textContent = totalOrders;
-            document.getElementById("totalAmount").textContent = totalAmount;
 
-            const orderStatsList = document.getElementById("serviceStats");
-            for (const service in serviceStats) {
-                const listItem = document.createElement("li");
-                listItem.textContent = `${service}: ${serviceStats[service]} раз`;
-                orderStatsList.appendChild(listItem);
-            }
-
-            const salesChart = document.getElementById("salesChart");
-            const salesDates = Object.keys(salesData);
-            salesDates.sort();
-            const salesValues = Object.values(salesData);
+            const salesDates = Object.keys(salesData).sort();
+            const salesValues = salesDates.map(date => salesData[date]);
 
             new Chart(salesChart, {
-                type: 'line',
+                type: 'bar',
                 data: {
-                    labels: salesDates, datasets: [{
+                    labels: salesDates,
+                    datasets: [{
                         label: 'Продажи',
-                        data: salesValues, backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        data: salesValues,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
                         borderColor: 'rgba(75, 192, 192, 1)',
                         borderWidth: 1
                     }]
@@ -68,20 +52,29 @@ document.addEventListener("DOMContentLoaded", function () {
                             title: {
                                 display: true,
                                 text: 'Дата'
-                            }
-                        },
+                            }                        },
                         y: {
                             beginAtZero: true,
                             suggestedMax: Math.max(...salesValues) + 10,
                             title: {
                                 display: true,
                                 text: 'Сумма'
-                            }
-                        }
+                            }                        }
                     }
                 }
             });
+            document.getElementById("totalOrders").textContent = totalOrders;
+            document.getElementById("totalAmount").textContent = totalAmount;
+
+            const orderStatsList = document.getElementById("serviceStats");
+            for (const service in serviceStats) {
+                const listItem = document.createElement("li");
+                listItem.textContent = `${service}: ${serviceStats[service]} раз`;
+                orderStatsList.appendChild(listItem);
+            }
+
         });
+
     }
     calculateStatistics();
 });
