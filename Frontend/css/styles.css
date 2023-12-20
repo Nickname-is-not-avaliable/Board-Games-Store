@@ -108,9 +108,8 @@ main {
 }
 
 .new-image {
-    margin-top: 50px;
     width: 100%;
-    height: 255px;
+    height: 100%;
     object-fit: cover;
     object-position: 50% 50%;
 }
@@ -125,7 +124,6 @@ main {
 
 .userTable {
     max-width: 1000px;
-    margin: 70px auto;
     color: #fefefe;
     padding: 20px;
     border-radius: 5px;
@@ -138,4 +136,63 @@ main {
 
 .modal{
     color: #d6dade;
+}
+
+
+.store__title {
+    font-weight: bold;
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+.store__address {
+    margin-bottom: 16px;
+}
+
+.store__prop {
+    display: flex;
+    align-items: flex-start;
+}
+
+.store__prop_line {
+    margin-bottom: 16px;
+}
+
+.store__prop_col:not(:last-of-type) {
+    margin-bottom: 24px;
+}
+
+.store__prop-icon {
+    font-size: 16px;
+    margin-right: 8px;
+    line-height: inherit;
+}
+
+.store__prop-icon_phone {
+    color: #0D61AE;
+}
+
+.store__prop-icon_subway {
+    color: #EE3537;
+    line-height: inherit!important;
+}
+
+.store__prop-icon_payment {
+    color: #FDC81B;
+}
+
+.store__prop-icon_buy {
+    color: #0D61AE;
+}
+
+.store__prop-icon_delivery {
+    color: #8ABD01;
+}
+
+.store__prop-name {
+    color: #89898B;
+}
+
+.store__prop-value {
+    margin-top: 8px;
 }
