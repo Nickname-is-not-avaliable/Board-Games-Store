@@ -1,5 +1,6 @@
 if (getCookieValue("role") === "ADMIN") {
-chandgePageElement('sidebar','Пользователи','users.html');
+chandgePageElement('sidebar','Админ панель','admin_panel.html');
+chandgePageElement('info','Аналитика','info.html');
 }
 
 if (getCookieValue("role") === "ADMIN" || getCookieValue("role") === "USER") {

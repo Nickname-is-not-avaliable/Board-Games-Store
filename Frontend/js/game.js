@@ -13,7 +13,7 @@ function loadPage() {
 
         loadInformationById("releaseYear", data.releaseDate, "span");
         loadInformationById("description", data.description, "p");
-        loadInformationById("category", data.category, "category");
+        loadInformationById("category", data.category, "a");
         loadInformationById("price", data.price, "span");
         loadInformationById("publisher", data.publisher, "span");
         loadInformationById("numberOfPlayers", data.numberOfPlayers, "span");
@@ -55,13 +55,103 @@ function loadPage() {
             });
 
         function handleBuyButtonClick() {
-            console.log("Buy button clicked!");
-        }
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = parseInt(urlParams.get('id'));
 
-        function handlePreorderButtonClick() {
-            console.log("Preorder button clicked!");
+            const userId = parseInt(getCookieValue("id"));
+
+            if (productId && userId) {
+                fetch(`http://localhost:8080/api/board-games/${productId}`)
+                    .then(response => response.json())
+                    .then(productData => {
+                        const title = productData.title;
+                        const price = productData.price;
+
+                        const currentDate = new Date();
+
+                        fetch("http://localhost:8080/api/orders", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                                userId: userId,
+                                status: "CART",
+                                orderDetails: title,
+                                totalPrice: price,
+                                orderDate: currentDate
+                            }),
+                        })
+                            .then(response => {
+                                if (response.ok) {
+                                    alert("Заказ Добавлен в корзину");
+                                } else {
+                                    throw new Error(`HTTP error! Status: ${response.status}`);
+                                }
+                            })
+                            .catch(error => {
+                                console.error("Error adding product to preorder:", error);
+                                alert("Произошла ошибка при добавлении заказа");
+                            });
+                    })
+                    .catch(error => {
+                        console.error("Error fetching product details:", error);
+                        alert("Произошла ошибка при получении деталей товара");
+                    });
+            } else {
+                alert("Не удалось получить идентификатор продукта или пользователя");
+            }
         }
     });
+
+    function handlePreorderButtonClick() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = parseInt(urlParams.get('id'));
+
+        const userId = parseInt(getCookieValue("id"));
+
+        if (productId && userId) {
+            fetch(`http://localhost:8080/api/board-games/${productId}`)
+                .then(response => response.json())
+                .then(productData => {
+                    const title = productData.title;
+                    const price = productData.price;
+
+                    const currentDate = new Date();
+
+                    fetch("http://localhost:8080/api/orders", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            userId: userId,
+                            status: "PREORDER",
+                            orderDetails: title,
+                            totalPrice: price,
+                            orderDate: currentDate
+                        }),
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                alert("Предзаказ оформлен успешно");
+                            } else {
+                                throw new Error(`HTTP error! Status: ${response.status}`);
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error adding product to preorder:", error);
+                            alert("Произошла ошибка при добавлении предзаказа");
+                        });
+                })
+                .catch(error => {
+                    console.error("Error fetching product details:", error);
+                    alert("Произошла ошибка при получении деталей товара");
+                });
+        } else {
+            alert("Не удалось получить идентификатор продукта или пользователя");
+        }
+    }
 
 }
 
@@ -111,16 +201,14 @@ function updateComments(data) {
             deleteButton.textContent = 'Удалить';
             deleteButton.className = 'btn btn-danger btn-sm ml-2';
             deleteButton.addEventListener('click', function (event) {
-                deleteButton.onclick = (event) => {
-                    event.preventDefault();
-                    deleteComment(commentary.id);
-                };
-
+                event.preventDefault();
+                deleteComment(commentary.id);
+                return false;
             });
         }
         commentTwo.appendChild(commentText);
         if (getCookieValue("role") === "ADMIN") {
-            commentTwo.appendChild(deleteButton); // Добавляем кнопку к commentTwo
+            commentTwo.appendChild(deleteButton);
         }
 
         commentRight.innerHTML = commentOne;
@@ -131,8 +219,13 @@ function updateComments(data) {
 }
 
 function deleteComment(commentId) {
-    const endpoint = `ratings/${commentId}`;
-    fetchAPI(endpoint, loadComments, { method: 'DELETE' });
+    fetch(`http://localhost:8080/api/comments/${commentId}`, {
+        method: "DELETE",
+    }).then((response) => {
+        if (response.status === 204) {
+            loadComments();
+        }
+    });
 }
 
 function addComment(event) {
@@ -164,10 +257,11 @@ function addComment(event) {
                 alert("Максимальная длина комментария 2048 символов.");
             }
         });
-        loadPage();
+        loadComments();
         document.getElementById('comments').value = '';
+    } else {
+        alert("Пожалуйста, зарегистрируйтесь на сайте, чтобы оставлять комментарий")
     }
-    else{ alert("Пожалуйста, зарегистрируйтесь на сайте, чтобы оставлять комментарий")}
 }
 
 loadPage();
