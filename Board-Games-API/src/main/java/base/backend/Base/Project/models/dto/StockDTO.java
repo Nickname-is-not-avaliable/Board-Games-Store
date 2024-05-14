@@ -11,16 +11,15 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StockDTO {
+    public StockDTO(Stock stock) {
+        this.stockId = stock.getStockId();
+        this.storeId = stock.getStoreId();
+        this.boardGameId = stock.getBoardGameId();
+        this.quantity = stock.getQuantity();
+    }
 
-  public StockDTO(Stock stock) {
-    this.stockId = stock.getStockId();
-    this.storeId = stock.getStoreId();
-    this.boardGameId = stock.getBoardGameId();
-    this.quantity = stock.getQuantity();
-  }
-
-  private Integer stockId;
-  private Integer boardGameId;
-  private Integer storeId;
-  private Integer quantity;
+    private Integer stockId;
+    private Integer boardGameId;
+    private Integer storeId;
+    private Integer quantity;
 }

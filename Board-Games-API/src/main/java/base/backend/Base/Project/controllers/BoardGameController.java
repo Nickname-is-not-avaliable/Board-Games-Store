@@ -4,100 +4,86 @@ import base.backend.Base.Project.models.BoardGame;
 import base.backend.Base.Project.models.dto.BoardGameDTO;
 import base.backend.Base.Project.models.dao.BoardGameDAO;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/board-games")
 @Tag(name = "BoardGames")
 public class BoardGameController {
 
-  private final BoardGameDAO boardGameDAO;
+    private final BoardGameService boardGameService;
 
-  @Autowired
-  public BoardGameController(BoardGameDAO boardGameDAO) {
-    this.boardGameDAO = boardGameDAO;
-  }
-
-  @GetMapping
-  public ResponseEntity<List<BoardGameDTO>> getAllBoardGames() {
-    List<BoardGame> boardGames = boardGameDAO.getAllBoardGames();
-    List<BoardGameDTO> boardGameDTOs = boardGames
-      .stream()
-      .map(this::convertToDTO)
-      .collect(Collectors.toList());
-    return ResponseEntity.ok(boardGameDTOs);
-  }
-
-  @GetMapping("/{id}")
-  public ResponseEntity<BoardGameDTO> getBoardGameById(
-    @PathVariable Integer id
-  ) {
-    BoardGame boardGame = boardGameDAO.getBoardGameById(id);
-    if (boardGame != null) {
-      return ResponseEntity.ok(convertToDTO(boardGame));
-    } else {
-      return ResponseEntity.notFound().build();
+    @Autowired
+    public BoardGameController(BoardGameService boardGameService) {
+        this.boardGameService = boardGameService;
     }
-  }
 
-  @GetMapping("/by-category/{category}")
-  public ResponseEntity<List<BoardGameDTO>> getBoardGamesByCategory(
-    @PathVariable String category
-  ) {
-    List<BoardGame> boardGames = boardGameDAO.getBoardGamesByCategory(
-      category
-    );
-    List<BoardGameDTO> boardGameDTOs = boardGames
-      .stream()
-      .map(this::convertToDTO)
-      .collect(Collectors.toList());
-    return ResponseEntity.ok(boardGameDTOs);
-  }
+    @GetMapping
+    public ResponseEntity<List<BoardGameDTO>> getAllBoardGames() {
+        List<BoardGame> boardGames = boardGameService.getAllBoardGames();
+        List<BoardGameDTO> boardGameDTOs = boardGames.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(boardGameDTOs);
+    }
 
-  @PostMapping
-  public ResponseEntity<BoardGameDTO> createBoardGame(
-    @RequestBody BoardGameDTO boardGameDTO
-  ) {
-    BoardGame newBoardGame = boardGameDAO.createBoardGame(boardGameDTO);
-    BoardGameDTO newBoardGameDTO = convertToDTO(newBoardGame);
-    return ResponseEntity.status(HttpStatus.CREATED).body(newBoardGameDTO);
-  }
+    @GetMapping("/{id}")
+    public ResponseEntity<BoardGameDTO> getBoardGameById(@PathVariable Integer id) {
+        Optional<BoardGame> optionalBoardGame = boardGameService.getBoardGameById(id);
+        return optionalBoardGame
+                .map(boardGame -> ResponseEntity.ok(convertToDTO(boardGame)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
-  @PatchMapping("/{id}")
-  public ResponseEntity<BoardGameDTO> updateBoardGame(
-    @PathVariable Integer id,
-    @RequestBody Map<String, Object> updates
-  ) {
-    BoardGame updatedBoardGame = boardGameDAO.updateBoardGame(id, updates);
-    BoardGameDTO updatedBoardGameDTO = convertToDTO(updatedBoardGame);
-    return ResponseEntity.ok(updatedBoardGameDTO);
-  }
+    @GetMapping("/by-category/{category}")
+    public ResponseEntity<List<BoardGameDTO>> getBoardGamesByCategory(@PathVariable String category) {
+        List<BoardGame> boardGames = boardGameService.getBoardGamesByCategory(category);
+        List<BoardGameDTO> boardGameDTOs = boardGames.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(boardGameDTOs);
+    }
 
-  @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteBoardGame(@PathVariable Integer id) {
-    boardGameDAO.deleteBoardGame(id);
-    return ResponseEntity.noContent().build();
-  }
+    @PostMapping
+    public ResponseEntity<BoardGameDTO> createBoardGame(@RequestBody BoardGameDTO boardGameDTO) {
+        BoardGame newBoardGame = boardGameService.createBoardGame(boardGameDTO);
+        BoardGameDTO newBoardGameDTO = convertToDTO(newBoardGame);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newBoardGameDTO);
+    }
 
-  @GetMapping("/search")
-  public ResponseEntity<List<BoardGameDTO>> getBoardGamesByTitleContaining(
-    @RequestParam String searchString
-  ) {
-    List<BoardGameDTO> movieDTOs = boardGameDAO
-      .getBoardGamesByTitleContaining(searchString)
-      .stream()
-      .map(BoardGameDTO::new)
-      .collect(Collectors.toList());
-    return ResponseEntity.ok(movieDTOs);
-  }
+    @PatchMapping("/{id}")
+    public ResponseEntity<BoardGameDTO> updateBoardGame(
+            @PathVariable Integer id,
+            @RequestBody Map<String, Object> updates
+    ) {
+        BoardGame updatedBoardGame = boardGameService.updateBoardGame(id, updates);
+        BoardGameDTO updatedBoardGameDTO = convertToDTO(updatedBoardGame);
+        return ResponseEntity.ok(updatedBoardGameDTO);
+    }
 
-  private BoardGameDTO convertToDTO(BoardGame boardGame) {
-    return new BoardGameDTO(boardGame);
-  }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBoardGame(@PathVariable Integer id) {
+        boardGameService.deleteBoardGame(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<BoardGameDTO>> getBoardGamesByTitleContaining(@RequestParam String searchString) {
+        List<BoardGameDTO> movieDTOs = boardGameService.getBoardGamesByTitleContaining(searchString).stream()
+                .map(BoardGameDTO::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(movieDTOs);
+    }
+
+    private BoardGameDTO convertToDTO(BoardGame boardGame) {
+        return new BoardGameDTO(boardGame);
+    }
 }

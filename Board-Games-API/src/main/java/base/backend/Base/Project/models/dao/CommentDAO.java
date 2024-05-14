@@ -2,56 +2,68 @@ package base.backend.Base.Project.models.dao;
 
 import base.backend.Base.Project.models.Comment;
 import base.backend.Base.Project.models.dto.CommentDTO;
+import base.backend.Base.Project.repositories.CommentRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.time.LocalDateTime;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Service;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class CommentDAO {
 
-  @Autowired
-  private JdbcTemplate jdbcTemplate;
+    private final CommentRepository commentRepository;
 
-  public List<Comment> getAllComments() {
-    String sql = "SELECT * FROM comments";
-    return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Comment.class));
-  }
+    public CommentService(CommentRepository commentRepository) {
+        this.commentRepository = commentRepository;
+    }
 
-  public Comment getCommentById(Integer id) {
-    String sql = "SELECT * FROM comments WHERE comment_id = ?";
-    return jdbcTemplate.queryForObject(
-      sql,
-      new BeanPropertyRowMapper<>(Comment.class),
-      id
-    );
-  }
+    public List<Comment> getAllComments() {
+        return commentRepository.findAll();
+    }
 
-  public List<Comment> getCommentsByBoardGameId(Integer boardGameId) {
-    String sql = "SELECT * FROM comments WHERE board_game_id = ?";
-    return jdbcTemplate.query(
-      sql,
-      new BeanPropertyRowMapper<>(Comment.class),
-      boardGameId
-    );
-  }
+    public Optional<Comment> getCommentById(Integer id) {
+        return commentRepository.findById(id);
+    }
 
-  public void createComment(CommentDTO commentDTO) {
-    String sql =
-      "INSERT INTO comments (board_game_id, user_id, text, date) VALUES (?, ?, ?, ?)";
-    jdbcTemplate.update(
-      sql,
-      commentDTO.getBoardGameId(),
-      commentDTO.getUserId(),
-      commentDTO.getText(),
-      LocalDateTime.now()
-    );
-  }
+    public List<Comment> getCommentsByBoardGameId(Integer boardGameId) {
+        return commentRepository.findByBoardGameId(boardGameId);
+    }
 
-  public void deleteComment(Integer id) {
-    String sql = "DELETE FROM comments WHERE comment_id = ?";
-    jdbcTemplate.update(sql, id);
-  }
+    public void createComment(CommentDTO commentDTO) {
+        Comment comment = new Comment(commentDTO);
+        comment.setDate(LocalDateTime.now());
+        commentRepository.save(comment);
+    }
+
+    public Comment updateComment(Integer id, Map<String, Object> updates) {
+        Comment existingComment = commentRepository
+                .findById(id)
+                .orElseThrow(this::commentNotFound);
+
+        if (updates.containsKey("boardGameId")) {
+            existingComment.setBoardGameId((Integer) updates.get("boardGameId"));
+        }
+
+        if (updates.containsKey("userId")) {
+            existingComment.setUserId((Integer) updates.get("userId"));
+        }
+
+        if (updates.containsKey("text")) {
+            existingComment.setText((String) updates.get("text"));
+        }
+
+        return commentRepository.save(existingComment);
+    }
+
+    public void deleteComment(Integer id) {
+        commentRepository.deleteById(id);
+    }
+
+    private ResponseStatusException commentNotFound() {
+        return new ResponseStatusException(HttpStatus.NOT_FOUND, "Comment not found");
+    }
 }

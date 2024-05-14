@@ -16,7 +16,7 @@ public class OpenApiConfig {
       .components(new Components())
       .info(
         new Info()
-          .title("Coursework API")
+          .title("Yet Another API")
           .description(
             "This API serves the Yet Another System, allowing interactions with various endpoints."
           )
