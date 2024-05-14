@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@Entity
+@Table(name = "board_games")
 public class BoardGame {
     public BoardGame(BoardGameDTO boardGameDTO) {
         this.id = boardGameDTO.getId();

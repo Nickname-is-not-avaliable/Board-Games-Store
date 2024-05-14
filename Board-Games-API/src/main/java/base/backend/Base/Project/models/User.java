@@ -1,5 +1,6 @@
 package base.backend.Base.Project.models;
 
+import base.backend.Base.Project.models.dto.UserDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,6 +9,8 @@ import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
+@Entity
+@Table(name = "users")
 @Schema(description = "Entity representing a user")
 public class User {
     public User(UserDTO userDTO) {

@@ -2,7 +2,7 @@ package base.backend.Base.Project.controllers;
 
 import base.backend.Base.Project.models.User;
 import base.backend.Base.Project.models.dto.UserDTO;
-import base.backend.Base.Project.models.dao.UserDAO;
+import base.backend.Base.Project.services.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

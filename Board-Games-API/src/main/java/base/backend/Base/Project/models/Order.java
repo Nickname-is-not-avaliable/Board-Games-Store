@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
+@Entity
+@Table(name = "orders")
 public class Order {
     public Order(OrderDTO orderDTO) {
         this.orderId = orderDTO.getOrderId();

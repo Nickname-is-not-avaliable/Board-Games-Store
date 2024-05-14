@@ -2,7 +2,7 @@ package base.backend.Base.Project.controllers;
 
 import base.backend.Base.Project.models.Comment;
 import base.backend.Base.Project.models.dto.CommentDTO;
-import base.backend.Base.Project.models.dao.CommentDAO;
+import base.backend.Base.Project.services.CommentService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

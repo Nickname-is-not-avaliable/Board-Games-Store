@@ -2,7 +2,7 @@ package base.backend.Base.Project.controllers;
 
 import base.backend.Base.Project.models.Order;
 import base.backend.Base.Project.models.dto.OrderDTO;
-import base.backend.Base.Project.models.dao.OrderDAO;
+import base.backend.Base.Project.services.OrderService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

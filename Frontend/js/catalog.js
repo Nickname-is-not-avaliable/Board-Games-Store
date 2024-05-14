@@ -10,6 +10,7 @@ function updateProducts(endpoint) {
 
         fetchAPI(`${endpoint}`, async data => {
             const isPopular = urlObject.searchParams.get("popular") === "1";
+            const isBest = urlObject.searchParams.get("best") === "1";
 
             let stockFetchPromises = [];
 
@@ -32,6 +33,14 @@ function updateProducts(endpoint) {
                         const quantityA = a.totalQuantity || 0;
                         const quantityB = b.totalQuantity || 0;
                         return quantityB - quantityA;
+                    });
+                }
+
+                if (isBest) {
+                    data.sort((a, b) => {
+                        const priceA = a.price || 0;
+                        const priceB = b.price || 0;
+                        return priceB - priceA;
                     });
                 }
 

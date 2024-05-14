@@ -74,5 +74,54 @@ function aproveOrder(OrderId) {
     });
 }
 
+function createAndSendOrder() {
+    const tableBody = document.querySelector("#OrderTable tbody");
+    const rows = tableBody.querySelectorAll("tr");
 
-updateOrderTable()
+    let totalOrderPrice = 0;
+    let orderDetails = [];
+
+    rows.forEach(row => {
+        const orderId = row.querySelector("td:nth-child(1)").innerText;
+        const details = row.querySelector("td:nth-child(2)").innerText;
+        const price = parseFloat(row.querySelector("td:nth-child(3)").innerText);
+
+        orderDetails.push(`${orderId}: ${details}`);
+        totalOrderPrice += price;
+
+        deleteOrder(orderId);
+    });
+
+    const newOrder = {
+        orderDetails: orderDetails.join(", "),
+        totalPrice: totalOrderPrice,
+        status: "OPENED"
+    };
+
+    fetch('http://localhost:8080/api/orders', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newOrder),
+    }).then(response => {
+        if (response.status === 201) {
+            tableBody.innerHTML = ""; // Очищаем таблицу после создания заказа
+            updateOrderTable();
+        }
+    });
+}
+
+function deleteOrder(orderId) {
+    fetch(`http://localhost:8080/api/orders/${orderId}`, {
+        method: "DELETE"
+    }).then(response => {
+        if (response.status === 200) {
+            console.log(`Order ${orderId} deleted`);
+        }
+    });
+}
+
+document.getElementById("confirmSendCart").addEventListener("click", createAndSendOrder);
+
+updateOrderTable();

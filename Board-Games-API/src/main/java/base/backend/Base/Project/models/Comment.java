@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
+@Entity
+@Table(name = "comments")
 public class Comment {
     public Comment(CommentDTO commentDTO) {
         this.commentId = commentDTO.getCommentId();
