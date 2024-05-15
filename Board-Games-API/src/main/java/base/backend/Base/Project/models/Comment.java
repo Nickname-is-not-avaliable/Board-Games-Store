@@ -18,6 +18,7 @@ public class Comment {
         this.userId = commentDTO.getUserId();
         this.text = commentDTO.getText();
         this.date = commentDTO.getDate();
+        this.liked = commentDTO.getLiked();
     }
 
     @Id
@@ -37,4 +38,6 @@ public class Comment {
     @Column(length = 2048)
     private String text;
     private LocalDateTime date;
+    private Boolean liked;
+
 }
