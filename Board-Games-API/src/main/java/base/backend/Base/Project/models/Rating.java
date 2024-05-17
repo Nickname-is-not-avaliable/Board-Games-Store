@@ -16,7 +16,6 @@ public class Rating {
         this.ratingId = ratingDTO.getRatingId();
         this.boardGameId = ratingDTO.getBoardGameId();
         this.userId = ratingDTO.getUserId();
-        this.date = ratingDTO.getDate();
         this.liked = ratingDTO.getLiked();
     }
 

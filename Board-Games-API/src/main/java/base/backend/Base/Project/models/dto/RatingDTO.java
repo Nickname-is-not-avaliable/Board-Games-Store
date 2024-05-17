@@ -17,7 +17,6 @@ public class RatingDTO {
         this.ratingId = rating.getRatingId();
         this.boardGameId = rating.getBoardGameId();
         this.userId = rating.getUserId();
-        this.date = rating.getDate();
         this.username = rating.getUser().getUsername();
         this.liked = rating.getLiked();
     }
@@ -26,6 +25,5 @@ public class RatingDTO {
     private Integer boardGameId;
     private Integer userId;
     private String username;
-    private LocalDateTime date;
     private Boolean liked;
 }
