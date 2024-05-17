@@ -34,8 +34,8 @@ public class Rating {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, insertable = false, updatable = false)
     private User user;
-    @Column(length = 2048)
     private LocalDateTime date;
+    @Column(name = "liked")
     private Boolean liked;
 
 }

@@ -20,7 +20,6 @@ public class CommentDTO {
         this.text = comment.getText();
         this.date = comment.getDate();
         this.username = comment.getUser().getUsername();
-        this.liked = comment.getLiked();
     }
 
     private Integer commentId;

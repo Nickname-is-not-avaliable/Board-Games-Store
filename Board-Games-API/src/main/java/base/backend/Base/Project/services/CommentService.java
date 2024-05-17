@@ -56,9 +56,6 @@ public class CommentService {
             existingComment.setText((String) updates.get("text"));
         }
 
-        if (updates.containsKey("isLiked")) {
-            existingComment.setLiked((Boolean) updates.get("isLiked"));
-        }
         return commentRepository.save(existingComment);
     }
 

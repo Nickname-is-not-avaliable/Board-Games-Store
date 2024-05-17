@@ -52,8 +52,8 @@ public class RatingService {
             existingRating.setUserId((Integer) updates.get("userId"));
         }
 
-        if (updates.containsKey("isLiked")) {
-            existingRating.setLiked((Boolean) updates.get("isLiked"));
+        if (updates.containsKey("liked")) {
+            existingRating.setLiked((Boolean) updates.get("liked"));
         }
         return ratingRepository.save(existingRating);
     }
