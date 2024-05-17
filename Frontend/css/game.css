@@ -567,3 +567,88 @@ b, strong, .fw700 {font-weight: 700;}
 .product-short__btn-subscribe_active .product-short__text_unsubscribed {
     display: none;
 }
+
+.rating-container {
+    position: relative;
+    width: 100%;
+    height: 20px;
+    background-color: gray;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.rating-bar {
+    position: absolute;
+    height: 100%;
+}
+
+.rating-bar.positive {
+    background-color: green;
+    width: 0;
+}
+
+.rating-bar.negative {
+    background-color: red;
+    right: 0;
+    width: 0;
+}
+
+.rating-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100px;
+    margin-top: 10px;
+}
+
+.rating-buttons img {
+    cursor: pointer;
+}
+
+.rating-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.rating-images {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.like-button, .dislike-button {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+.like-button {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.dislike-button {
+    margin-right: auto;
+}
+
+.like-button:hover, .dislike-button:hover {
+    transform: scale(1.2);
+}
+
+.like-button.active {
+    filter: hue-rotate(120deg); /* Green */
+    opacity: 1;
+}
+
+.dislike-button.active {
+    filter: hue-rotate(-90deg); /* Red */
+    opacity: 1;
+}
+
+.like-button:active, .dislike-button:active {
+    transform: scale(1.1);
+}

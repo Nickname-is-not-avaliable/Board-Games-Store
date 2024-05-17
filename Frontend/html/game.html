@@ -44,6 +44,15 @@
                         <div class="fposter img-box img-fit">
                             <img src="" alt="" id="previewImage" class="anim">
                         </div>
+                        <div id="gameRating"></div>
+                        <div class="rating-container">
+                            <div class="rating-bar positive"></div>
+                            <div class="rating-bar negative"></div>
+                        </div>
+                        <div class="rating-images">
+                            <img src="../thumbs-up.svg" class="like-button" title="Нравится" class="like-button">
+                            <img src="../thumbs-down.svg" class="dislike-button" title="Не нравится" class="dislike-button">
+                        </div>
 
                     </div>
 
@@ -188,7 +197,7 @@
                     </div>
 
                     <div class="sect-content fcomms-list" id="full-comms">
-                        <form method="post" name="dlemasscomments" id="dlemasscomments">
+                        <form  name="dlemasscomments" id="dlemasscomments">
                             <div id="dle-comments-list">
                                 <div id="dle-ajax-comments"></div>
                                 <div id="comment"></div>
@@ -198,7 +207,7 @@
 
                     </div>
 
-                    <form method="post" name="dle-comments-form" id="dle-comments-form"><!--noindex-->
+                    <form name="dle-comments-form" id="dle-comments-form"><!--noindex-->
                         <div class="add-comms" id="add-comms">
                             <div class="ac-textarea">
                                 <div class="bb-editor">
@@ -224,9 +233,13 @@
 <script src="../js/loadInformation.js"></script>
 <script src="../js/cookie.js"></script>
 <script src="../js/loadInformation.js"></script>
-<script src="../js/fetchAPI.js"></script>
 <script src="../js/dinamicPageElements.js"></script>
-<script src="../js/game.js"></script>
+<script src="../js/game/api.js"></script>
+<script src="../js/game/comments.js"></script>
+<script src="../js/game/order.js"></script>
+<script src="../js/game/rating.js"></script>
+<script src="../js/game/loadPage.js"></script>
+
 <script src="../js/search.js"></script>
 
 </body>
