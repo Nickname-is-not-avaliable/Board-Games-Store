@@ -4,14 +4,14 @@ import base.backend.Base.Project.models.BoardGame;
 import base.backend.Base.Project.models.dto.BoardGameDTO;
 import base.backend.Base.Project.services.BoardGameService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -19,7 +19,10 @@ import java.util.stream.Collectors;
 @Tag(name = "BoardGames")
 public class BoardGameController {
 
+    private static final Logger logger = LoggerFactory.getLogger(BoardGameController.class);
+
     private final BoardGameService boardGameService;
+    private final Map<String, Integer> categoryRatings = new HashMap<>();
 
     @Autowired
     public BoardGameController(BoardGameService boardGameService) {
@@ -38,6 +41,13 @@ public class BoardGameController {
     @GetMapping("/{id}")
     public ResponseEntity<BoardGameDTO> getBoardGameById(@PathVariable Integer id) {
         Optional<BoardGame> optionalBoardGame = boardGameService.getBoardGameById(id);
+
+        optionalBoardGame.ifPresent(boardGame -> {
+            String category = boardGame.getCategory();
+            categoryRatings.merge(category, 1, Integer::sum);
+            logger.info("Category '{}' accessed via ID {}. New rating: {}", category, id, categoryRatings.get(category));
+        });
+
         return optionalBoardGame
                 .map(boardGame -> ResponseEntity.ok(convertToDTO(boardGame)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -45,11 +55,32 @@ public class BoardGameController {
 
     @GetMapping("/by-category/{category}")
     public ResponseEntity<List<BoardGameDTO>> getBoardGamesByCategory(@PathVariable String category) {
+        categoryRatings.merge(category, 1, Integer::sum);
+        logger.info("Category '{}' accessed. New rating: {}", category, categoryRatings.get(category));
+
         List<BoardGame> boardGames = boardGameService.getBoardGamesByCategory(category);
         List<BoardGameDTO> boardGameDTOs = boardGames.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(boardGameDTOs);
+    }
+
+    @GetMapping("/sorted-by-category")
+    public ResponseEntity<List<BoardGameDTO>> getBoardGamesSortedByCategoryRating() {
+        List<String> sortedCategories = categoryRatings.entrySet().stream()
+                .sorted((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+
+        logger.info("Categories sorted by rating: {}", sortedCategories);
+
+        List<BoardGame> allGames = boardGameService.getAllBoardGames();
+        List<BoardGameDTO> sortedGames = allGames.stream()
+                .sorted(Comparator.comparingInt(game -> sortedCategories.indexOf(game.getCategory())))
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(sortedGames);
     }
 
     @PostMapping
