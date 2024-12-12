@@ -15,7 +15,7 @@ document
             if (response.status === 200) {
                 response.json().then((data) => {
 
-                    document.cookie = `id=${data.userId}; path=/`;
+                    document.cookie = `id=${data.id}; path=/`;
                     document.cookie = `role=${data.role}; path=/`;
 
                         window.location.href = "catalog.html";

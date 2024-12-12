@@ -4,7 +4,13 @@ function updateOrderTable() {
         .then((response) => response.json())
         .then(
             (data) => {
-                const filteredData = filterByStatus(data, "CART");
+                const orders = Array.isArray(data) ? data : data.orders || [];
+
+                if (!Array.isArray(orders)) {
+                    throw new Error("Expected 'orders' to be an array but received: " + typeof orders);
+                }
+        
+                const filteredData = filterByStatus(orders, "CART");
                 const tableBody = document.querySelector("#OrderTable tbody");
                 tableBody.innerHTML = "";
                 filteredData.forEach((order) => {
@@ -22,7 +28,7 @@ function updateOrderTable() {
             `;
                     tableBody.appendChild(row);
                 });
-            });
+            }).catch((error) => console.error("Error:", error));;
 }
 
 function showDeclineOrderModal(OrderId) {
