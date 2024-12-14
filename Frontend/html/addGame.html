@@ -13,57 +13,15 @@
           integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"/>
 </head>
 <body class="dark">
-<header>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-        <div class="container-fluid">
-            <a class="navbar-brand link-light ms-5" href="landing.html">Настольный</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <div class="mx-auto d-flex justify-content-between">
-                    <form class="form-inline" id="searchForm">
-                        <input class="form-control flex-grow-1" type="search" placeholder="Название товара" aria-label="Search" id="searchInput">
-                    </form>
-                    <button class="btn btn-outline-light my-sm-0" id="enterButton">Поиск</button>
-                </div>
-                <a class="text-light me-2">+375 29 6677991</a>
-                <a class="me-4 link-underline-opacity-0  link-light" href="cart.html"><img src="../cart.svg"> Корзина </a>
-                <a id="enter" class="nav-link link-light me-3" href="login.html">Войти</a>
-            </div>
-        </div>
-    </nav>
-</header>
-
-<div class="container">
-    <aside class="sidebar">
-        <ul>
-            <h5 id="sidebar"></h5>
-            <h5><a href="catalog.html"
-                   class="link-offset-2 link-light link-underline link-underline-opacity-0">Главная</a>
-            </h5>
-            <h5><a href="catalog.html?popular=1"
-                   class="link-offset-2 link-light link-underline link-underline-opacity-0">Популярные</a>
-            </h5>
-            <h5><a href="catalog.html?best=1"
-                   class="link-offset-2 link-light link-underline link-underline-opacity-0">Лучшие</a>
-            </h5>
-
-            <h5><a href="catalog.html?category=Стратегия"
-                   class="link-offset-2 link-light link-underline link-underline-opacity-0">Стратегии</a>
-            </h5>
-            <h5><a href="catalog.html?category=Классическая"
-                   class="link-offset-2 link-light link-underline link-underline-opacity-0">Классические</a></h5>
-
-            <h5><a href="catalog.html?category=Детская"
-                   class="link-offset-2 link-light link-underline link-underline-opacity-0">Для детей</a>
-            </h5>
-            <h5 id="info"></h5>
-
-        </ul>
-    </aside>
-</div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch("header-and-sidebar.html")
+                .then(response => response.text())
+                .then(html => {
+                    document.body.insertAdjacentHTML("afterbegin", html);
+                });
+        });
+    </script> 
 
 
 <div class="notModal">

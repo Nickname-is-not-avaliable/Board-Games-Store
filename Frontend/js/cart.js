@@ -22,8 +22,7 @@ function updateOrderTable() {
               <td>${order.totalPrice}</td>
               <td>${formatDateTime(order.orderDate)}</td>
               <td>
-                <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#deleteOrderModal" onclick="aproveOrder(${order.orderId})">Подтвердить</button>
-                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteOrderModal" onclick="showDeclineOrderModal(${order.orderId})">Отменить</button>
+                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteOrderModal" onclick="declineOrder(${order.orderId})">Удалить из избранного</button>
               </td>
             `;
                     tableBody.appendChild(row);
@@ -127,7 +126,5 @@ function deleteOrder(orderId) {
         }
     });
 }
-
-document.getElementById("confirmSendCart").addEventListener("click", createAndSendOrder);
 
 updateOrderTable();

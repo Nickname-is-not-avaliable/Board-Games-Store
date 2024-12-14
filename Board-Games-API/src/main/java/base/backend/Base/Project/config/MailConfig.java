@@ -8,9 +8,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MailConfig {
 
-  private final String username = "lc.devsparkclub@yandex.by";
+  private final String username = "dont-hurt-me-no-more@yandex.ru";
 
-  private final String password = "libkrhghwcfcvqzj";
+  private final String password = "21xsaznmb";
 
   @Bean
   public Session mailSession() {

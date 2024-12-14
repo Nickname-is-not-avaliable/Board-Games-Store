@@ -37,15 +37,10 @@ function loadPage() {
                 const button = document.createElement("a");
                 button.classList.add("btn", "ny-img");
 
-                if (totalQuantity > 0) {
-                    button.classList.add("btn-primary");
-                    button.textContent = "КУПИТЬ";
-                    button.addEventListener("click", handleBuyButtonClick);
-                } else {
-                    button.classList.add("btn-outline-success");
-                    button.textContent = "ПРЕДЗАКАЗ";
-                    button.addEventListener("click", handlePreorderButtonClick);
-                }
+                button.classList.add("btn-outline-success");
+                button.textContent = "Добавить в избранное";
+                button.addEventListener("click", handleBuyButtonClick);
+                
 
                 buyButtonContainer.appendChild(button);
             })
@@ -84,22 +79,22 @@ function loadPage() {
                         })
                             .then(response => {
                                 if (response.ok) {
-                                    alert("Заказ Добавлен в корзину");
+                                    alert("Игра добавлена в избранное");
                                 } else {
                                     throw new Error(`HTTP error! Status: ${response.status}`);
                                 }
                             })
                             .catch(error => {
                                 console.error("Error adding product to preorder:", error);
-                                alert("Произошла ошибка при добавлении заказа");
+                                alert("Произошла ошибка при добавлении игры");
                             });
                     })
                     .catch(error => {
                         console.error("Error fetching product details:", error);
-                        alert("Произошла ошибка при получении деталей товара");
+                        alert("Произошла ошибка при получении деталей игры");
                     });
             } else {
-                alert("Не удалось получить идентификатор продукта или пользователя");
+                alert("Не удалось получить идентификатор игры или пользователя");
             }
         }
     });
@@ -134,22 +129,22 @@ function loadPage() {
                     })
                         .then(response => {
                             if (response.ok) {
-                                alert("Предзаказ оформлен успешно");
+                                alert("Игра добалена в избранное!");
                             } else {
                                 throw new Error(`HTTP error! Status: ${response.status}`);
                             }
                         })
                         .catch(error => {
                             console.error("Error adding product to preorder:", error);
-                            alert("Произошла ошибка при добавлении предзаказа");
+                            alert("Произошла ошибка при добавлении в избранное");
                         });
                 })
                 .catch(error => {
                     console.error("Error fetching product details:", error);
-                    alert("Произошла ошибка при получении деталей товара");
+                    alert("Произошла ошибка при получении деталей игры");
                 });
         } else {
-            alert("Не удалось получить идентификатор продукта или пользователя");
+            alert("Не удалось получить идентификатор игры или пользователя");
         }
     }
 

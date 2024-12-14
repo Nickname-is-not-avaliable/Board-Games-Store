@@ -315,7 +315,7 @@ b, strong, .fw700 {font-weight: 700;}
     border: 1px solid #3f3f3f;
     background: #1f212d;
     border-radius: 8px;
-    max-width: 333px;
+    width: 250px;
 }
 .product-short__social {
     margin-bottom: 15px;
