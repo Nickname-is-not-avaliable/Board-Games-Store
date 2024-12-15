@@ -68,58 +68,29 @@ function updateProducts(endpoint) {
                     price.textContent = `Цена: ${product.price} руб.`;
                     price.className = "ms-2 text-light";
 
-                    const preorderButton = document.createElement("button");
-                    preorderButton.textContent = "ПРЕДЗАКАЗ";
-                    preorderButton.className = "btn btn-outline-success btn-lg mt-4";
-                    preorderButton.style.width = "100%";
-                    preorderButton.style.display = "inline-block";
-                    preorderButton.addEventListener("click", function () {
-                        handlePreorderButtonClick(product.id);
-                    });
+
                     const buyButton = document.createElement("button");
                     buyButton.style.display = "none";
 
-
-                    const quantityContainer = document.createElement("div");
-                    quantityContainer.classList.add("quantity-container");
-                    quantityContainer.classList.add("mb-2");
-
-                    const quantityLabel = document.createElement("span");
-                    quantityLabel.textContent = "В наличии: ";
-                    quantityLabel.className = "ms-2 quantity-label text-white-50";
-
-                    const quantityValue = document.createElement("span");
-                    quantityValue.className = "quantity-value text-white-50";
-
-                    fetchAPI(`stocks/by-board-game/${product.id}`, stockDataArray => {
-                        const totalQuantity = stockDataArray.reduce((total, stockData) => {
-                            return total + (stockData.quantity || 0);
-                        }, 0);
-
-                        if (totalQuantity > 0) {
-                            quantityValue.textContent = totalQuantity;
-
-                            quantityContainer.appendChild(quantityLabel);
-                            quantityContainer.appendChild(quantityValue);
-
-                            preorderButton.style.display = "none";
-                            buyButton.style.display = "inline-block";
-                            buyButton.textContent = "КУПИТЬ";
-                            buyButton.className = "btn btn-primary btn-lg";
-                            buyButton.style.width = "100%";
-                            buyButton.addEventListener("click", function () {
-                                handleBuyButtonClick(product.id);
-                            });
-                        }
+                    const category = document.createElement("span");
+                    category.textContent = `${product.category}  ${product.age || 0}+`;
+                    category.className = "ms-2 text-light";
+                    
+                    buyButton.style.display = "inline-block";
+                    buyButton.textContent = "★ В избранное";
+                    buyButton.className = "btn btn-outline-success btn-lg";
+                    buyButton.style.width = "100%";
+                    buyButton.addEventListener("click", function () {
+                        handleBuyButtonClick(product.id);
                     });
-
+                    
                     preview.appendChild(image);
                     preview.appendChild(title);
                     preview.appendChild(price);
-                    preview.appendChild(quantityContainer);
+                    preview.appendChild(category);
                     preview.appendChild(buyButton);
-                    preview.appendChild(preorderButton);
                     preview.appendChild(productId);
+
 
                     productContainer.appendChild(preview);
 
@@ -188,14 +159,14 @@ function handleBuyButtonClick(productId) {
                 })
                     .then(response => {
                         if (response.ok) {
-                            alert("Заказ добавлен в корзину");
+                            alert("Игра добавлена в избранное");
                         } else {
                             throw new Error(`HTTP error! Status: ${response.status}`);
                         }
                     })
                     .catch(error => {
                         console.error("Error adding product to order:", error);
-                        alert("Произошла ошибка при добавлении товара в корзину");
+                        alert("Произошла ошибка при добавлении игры в избранное");
                     });
             })
             .catch(error => {
@@ -206,51 +177,6 @@ function handleBuyButtonClick(productId) {
         alert("Не удалось получить идентификатор продукта или пользователя");
     }
 }
-
-function handlePreorderButtonClick(productId) {
-
-    const userId = getCookieValue("id");
-
-    if (productId && userId) {
-        fetch(`http://localhost:8080/api/board-games/${productId}`)
-            .then(response => response.json())
-            .then(productData => {
-                const title = productData.title;
-                const price = productData.price;
-
-                fetch("http://localhost:8080/api/orders", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        userId: userId,
-                        status: "PREORDER",
-                        orderDetails: title,
-                        totalPrice: price,
-                    }),
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            alert("Заказ оформлен успешно");
-                        } else {
-                            throw new Error(`HTTP error! Status: ${response.status}`);
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Error adding product to order:", error);
-                        alert("Произошла ошибка при добавлении товара в корзину");
-                    });
-            })
-            .catch(error => {
-                console.error("Error fetching product details:", error);
-                alert("Произошла ошибка при получении деталей товара");
-            });
-    } else {
-        alert("Не удалось получить идентификатор продукта или пользователя");
-    }
-}
-
 
 const currentURL = window.location.href;
 const urlObject = new URL(currentURL);

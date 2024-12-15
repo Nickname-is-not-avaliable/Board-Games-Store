@@ -1,33 +1,63 @@
-function updateOrderTable() {
-    const userId = getCookieValue('id');
-    fetch(`http://localhost:8080/api/orders/by-user/${userId}`)
-        .then((response) => response.json())
-        .then(
-            (data) => {
-                const orders = Array.isArray(data) ? data : data.orders || [];
-
-                if (!Array.isArray(orders)) {
-                    throw new Error("Expected 'orders' to be an array but received: " + typeof orders);
-                }
+async function updateOrderTable() {
+    try {
+        const userId = getCookieValue('id');
+        const response = await fetch(`http://localhost:8080/api/orders/by-user/${userId}`);
         
-                const filteredData = filterByStatus(orders, "CART");
-                const tableBody = document.querySelector("#OrderTable tbody");
-                tableBody.innerHTML = "";
-                filteredData.forEach((order) => {
-                    const row = document.createElement("tr");
+        if (!response.ok) {
+            throw new Error(`Failed to fetch orders: ${response.statusText}`);
+        }
 
-                    row.innerHTML = `
-              <td>${order.orderId}</td>
-              <td>${order.orderDetails}</td>
-              <td>${order.totalPrice}</td>
-              <td>${formatDateTime(order.orderDate)}</td>
-              <td>
-                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteOrderModal" onclick="declineOrder(${order.orderId})">Удалить из избранного</button>
-              </td>
+        const data = await response.json();
+        const orders = Array.isArray(data) ? data : data.orders || [];
+
+        if (!Array.isArray(orders)) {
+            throw new Error("Expected 'orders' to be an array but received: " + typeof orders);
+        }
+
+        const filteredData = filterByStatus(orders, "CART");
+        const tableBody = document.querySelector("#OrderTable tbody");
+        tableBody.innerHTML = "";
+
+        for (const order of filteredData) {
+            const gameId = await getGameIdByTitle(order.orderDetails);
+
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>
+                    <a href="game.html?id=${gameId || ''}"
+                    class="link-offset-2 link-light link-underline link-underline-opacity-0">
+                    ${order.orderDetails}
+                    </a>
+                </td>
+                <td>${order.totalPrice}</td>
+                <td>${formatDateTime(order.orderDate)}</td>
+                <td>
+                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteOrderModal" onclick="declineOrder(${order.orderId})">
+                        Удалить из избранного
+                    </button>
+                </td>
             `;
-                    tableBody.appendChild(row);
-                });
-            }).catch((error) => console.error("Error:", error));;
+            tableBody.appendChild(row); // Добавляем строку в таблицу
+        }
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+async function getGameIdByTitle(title) {
+    try {
+        const response = await fetch("http://localhost:8080/api/board-games");
+        if (!response.ok) {
+            throw new Error(`Failed to fetch board games: ${response.statusText}`);
+        }
+
+        const games = await response.json();
+        const game = games.find((g) => g.title === title);
+        return game ? game.id : null; // Возвращаем ID или null, если игра не найдена
+    } catch (error) {
+        console.error("Error fetching board games:", error);
+        return null;
+    }
 }
 
 function showDeclineOrderModal(OrderId) {
