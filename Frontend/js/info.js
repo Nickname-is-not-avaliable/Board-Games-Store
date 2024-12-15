@@ -2,37 +2,32 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function calculateStatistics() {
         let totalOrders = 0;
-        let totalAmount = 0;
         const serviceStats = {};
-        const salesData = {};
-
+        const dailyOrders = {}; 
 
         fetchAPI("orders", data => {
-            const filteredData = filterByStatus(data, "CONFIRMED");
+            const filteredData = filterByStatus(data, "CART");
 
-            // Инициализация и обработка данных
             totalOrders = filteredData.length;
             filteredData.forEach((filteredDatum) => {
-                totalAmount += filteredDatum.totalPrice;
+                const orderDate = moment(filteredDatum.orderDate).format('YYYY-MM-DD'); 
+
+                // Считаем количество заказов для каждого дня
+                dailyOrders[orderDate] = (dailyOrders[orderDate] || 0) + 1;
 
                 const orderDetail = filteredDatum.orderDetails;
                 serviceStats[orderDetail] = (serviceStats[orderDetail] || 0) + 1;
-
-                const date = moment(filteredDatum.orderDate).format('YYYY-MM-DD');
-                salesData[date] = (salesData[date] || 0) + filteredDatum.totalPrice;
             });
 
-
-            const salesDates = Object.keys(salesData).sort();
-            const salesValues = salesDates.map(date => salesData[date]);
-
+            const salesDates = Object.keys(dailyOrders).sort(); 
+            const orderCounts = salesDates.map(date => dailyOrders[date]); 
             new Chart(salesChart, {
                 type: 'bar',
                 data: {
                     labels: salesDates,
                     datasets: [{
-                        label: 'Продажи',
-                        data: salesValues,
+                        label: 'Количество заказов',
+                        data: orderCounts,
                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
                         borderColor: 'rgba(75, 192, 192, 1)',
                         borderWidth: 1
@@ -52,19 +47,21 @@ document.addEventListener("DOMContentLoaded", function () {
                             title: {
                                 display: true,
                                 text: 'Дата'
-                            }                        },
+                            }
+                        },
                         y: {
                             beginAtZero: true,
-                            suggestedMax: Math.max(...salesValues) + 10,
+                            suggestedMax: Math.max(...orderCounts) + 1, 
                             title: {
                                 display: true,
-                                text: 'Сумма'
-                            }                        }
+                                text: 'Количество заказов'
+                            }
+                        }
                     }
                 }
             });
+
             document.getElementById("totalOrders").textContent = totalOrders;
-            document.getElementById("totalAmount").textContent = totalAmount;
 
             const orderStatsList = document.getElementById("serviceStats");
             for (const service in serviceStats) {

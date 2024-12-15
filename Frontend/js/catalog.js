@@ -1,6 +1,6 @@
 function updateProducts(endpoint) {
 
-
+    console.log(`Fetching from: ${endpoint}`);
     if (typeof productContainer === 'undefined' || productContainer === null) {
         console.error('productContainer is not defined. Please define it before calling updateProducts.');
         return;
@@ -9,41 +9,6 @@ function updateProducts(endpoint) {
     fetchAPI(`${endpoint}`, data => {
 
         fetchAPI(`${endpoint}`, async data => {
-            const isPopular = urlObject.searchParams.get("popular") === "1";
-            const isBest = urlObject.searchParams.get("best") === "1";
-
-            let stockFetchPromises = [];
-
-            data.forEach(product => {
-                const stockPromise = new Promise((resolve, reject) => {
-                    fetchAPI(`stocks/by-board-game/${product.id}`, stockDataArray => {
-                        const totalQuantity = stockDataArray.reduce((total, stockData) => {
-                            return total + (stockData.quantity || 0);
-                        }, 0);
-                        product.totalQuantity = totalQuantity;
-                        resolve();
-                    });
-                });
-                stockFetchPromises.push(stockPromise);
-            });
-
-            Promise.all(stockFetchPromises).then(() => {
-                if (isPopular) {
-                    data.sort((a, b) => {
-                        const quantityA = a.totalQuantity || 0;
-                        const quantityB = b.totalQuantity || 0;
-                        return quantityB - quantityA;
-                    });
-                }
-
-                if (isBest) {
-                    data.sort((a, b) => {
-                        const priceA = a.price || 0;
-                        const priceB = b.price || 0;
-                        return priceB - priceA;
-                    });
-                }
-
 
                 data.forEach(product => {
 
@@ -126,7 +91,6 @@ function updateProducts(endpoint) {
                     });
                 }
             });
-        });
     });
 }
 
@@ -182,19 +146,18 @@ const currentURL = window.location.href;
 const urlObject = new URL(currentURL);
 const productId = urlObject.searchParams.get("id");
 const productCategory = urlObject.searchParams.get("category");
-switch (true) {
-    case !productId && !productCategory:
-        updateProducts('board-games');
-        break;
+const popular = urlObject.searchParams.get("popular") === "1"
+const best = urlObject.searchParams.get("best") === "1"
 
-    case Boolean(productId):
-        updateProducts(`board-games/search?searchString=${productId}`);
-        break;
-
-    case Boolean(productCategory):
-        updateProducts(`board-games/by-category/${productCategory}`);
-        break;
-
-    default:
-        console.error('Invalid parameters');
+if (!productId && !productCategory && !popular && !best) {
+    updateProducts('board-games');
+} else if (Boolean(popular)) {
+    updateProducts('board-games/sorted-by-category');
+} else if (Boolean(productId)) {
+    updateProducts(`board-games/search?searchString=${productId}`);
+} else if (Boolean(productCategory)) {
+    updateProducts(`board-games/by-category/${productCategory}`);
+} else {
+    console.error('Invalid parameters');
 }
+
