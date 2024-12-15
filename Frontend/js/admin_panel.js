@@ -1,114 +1,114 @@
 //===ORDERS===
-function updateOrderTable() {
-    const orderStatus = document.getElementById("orderStatus").value;
-    fetch("http://localhost:8080/api/orders")
-        .then((response) => response.json())
-        .then(
-            (data) => {
-                const filteredData = filterByStatus(data, orderStatus);
-                const tableBody = document.querySelector("#OrderTable tbody");
-                tableBody.innerHTML = "";
-                filteredData.forEach((order) => {
-                    const row = document.createElement("tr");
+// function updateOrderTable() {
+//     const orderStatus = document.getElementById("orderStatus").value;
+//     fetch("http://localhost:8080/api/orders")
+//         .then((response) => response.json())
+//         .then(
+//             (data) => {
+//                 const filteredData = filterByStatus(data, orderStatus, "status");
+//                 const tableBody = document.querySelector("#OrderTable tbody");
+//                 tableBody.innerHTML = "";
+//                 filteredData.forEach((order) => {
+//                     const row = document.createElement("tr");
 
-                    fetch(`http://localhost:8080/api/users/${order.userId}`)
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error(`Ошибка HTTP: ${response.status}`);
-                            }
-                            return response.json();
-                        })
-                        .then(userData => {
+//                     fetch(`http://localhost:8080/api/users/${order.userId}`)
+//                         .then(response => {
+//                             if (!response.ok) {
+//                                 throw new Error(`Ошибка HTTP: ${response.status}`);
+//                             }
+//                             return response.json();
+//                         })
+//                         .then(userData => {
 
-                            row.innerHTML = `
-              <td>${order.orderId}</td>
-              <td>${order.orderDetails}</td>
-              <td>${userData.username}</td>
-              <td>${order.totalPrice}</td>
-              <td>${formatDateTime(order.orderDate)}</td>
-              <td>
-                <button class="btn btn-outline-light" type="button" data-bs-toggle="modal" data-bs-target="#editOrderModal" data-bs-whatever="@getbootstrap" onclick="showEditOrder(${order.orderId})">Редактировать</button>
-                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteOrderModal" onclick="showDeleteOrderModal(${order.orderId})">Удалить</button>
-              </td>
-            `;
-                            tableBody.appendChild(row);
-                        });
-                });
-            });
-}
+//                             row.innerHTML = `
+//               <td>${order.orderId}</td>
+//               <td>${order.orderDetails}</td>
+//               <td>${userData.username}</td>
+//               <td>${order.totalPrice}</td>
+//               <td>${formatDateTime(order.orderDate)}</td>
+//               <td>
+//                 <button class="btn btn-outline-light" type="button" data-bs-toggle="modal" data-bs-target="#editOrderModal" data-bs-whatever="@getbootstrap" onclick="showEditOrder(${order.orderId})">Редактировать</button>
+//                 <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteOrderModal" onclick="showDeleteOrderModal(${order.orderId})">Удалить</button>
+//               </td>
+//             `;
+//                             tableBody.appendChild(row);
+//                         });
+//                 });
+//             });
+// }
 
-const orderStatusSelect = document.getElementById("orderStatus");
+// const orderStatusSelect = document.getElementById("orderStatus");
 
-orderStatusSelect.addEventListener("change", () => {
-    updateOrderTable();
-});
+// orderStatusSelect.addEventListener("change", () => {
+//     updateOrderTable();
+// });
 
-function showEditOrder(orderId) {
-    const modal = document.getElementById("editBookingModal");
-    fetchAPI(`orders/${orderId}`, orderData => {
-            document.getElementById("editOrderId").value = orderData.orderId;
-            document.getElementById("orderDetails").value = orderData.orderDetails;
-            document.getElementById("totalPrice").value = orderData.totalPrice;
-            document.getElementById("editOrderStatus").value = orderData.status;
+// function showEditOrder(orderId) {
+//     const modal = document.getElementById("editBookingModal");
+//     fetchAPI(`orders/${orderId}`, orderData => {
+//             document.getElementById("editOrderId").value = orderData.orderId;
+//             document.getElementById("orderDetails").value = orderData.orderDetails;
+//             document.getElementById("totalPrice").value = orderData.totalPrice;
+//             document.getElementById("editOrderStatus").value = orderData.status;
 
-    });
+//     });
 
-    submitEditOrder.onclick = function () {
-        const orderId = parseInt(document.getElementById("editOrderId").value);
-        const orderDetails = document.getElementById("orderDetails").value;
-        const totalPrice = parseInt(document.getElementById("totalPrice").value);
-        const status = document.getElementById("editOrderStatus").value;
+//     submitEditOrder.onclick = function () {
+//         const orderId = parseInt(document.getElementById("editOrderId").value);
+//         const orderDetails = document.getElementById("orderDetails").value;
+//         const totalPrice = parseInt(document.getElementById("totalPrice").value);
+//         const status = document.getElementById("editOrderStatus").value;
 
-        editOrder(orderId, orderDetails, totalPrice, status)
-    }
-}
+//         editOrder(orderId, orderDetails, totalPrice, status)
+//     }
+// }
 
-function editOrder(orderId, orderDetails, totalPrice, status) {
-    fetch(`http://localhost:8080/api/orders/${orderId}`, {
-        method: "PATCH",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            total_price: totalPrice,
-            order_details: orderDetails,
-            status: status
-        }),
-    }).then((response) => {
-        if (response.status === 200) {
-            updateOrderTable();
-        }
-    });
-}
+// function editOrder(orderId, orderDetails, totalPrice, status) {
+//     fetch(`http://localhost:8080/api/orders/${orderId}`, {
+//         method: "PATCH",
+//         headers: {
+//             "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify({
+//             total_price: totalPrice,
+//             order_details: orderDetails,
+//             status: status
+//         }),
+//     }).then((response) => {
+//         if (response.status === 200) {
+//             updateOrderTable();
+//         }
+//     });
+// }
 
-function showDeleteOrderModal(OrderId) {
-    const modal = document.getElementById("deleteOrderModal");
-    const confirmButton = document.getElementById("confirmDeleteOrder");
-    const cancelButton = document.getElementById("cancelDeleteOrder");
+// function showDeleteOrderModal(OrderId) {
+//     const modal = document.getElementById("deleteOrderModal");
+//     const confirmButton = document.getElementById("confirmDeleteOrder");
+//     const cancelButton = document.getElementById("cancelDeleteOrder");
 
-    confirmButton.onclick = function () {
-        modal.style.display = "none";
-        deleteOrder(OrderId);
-    };
+//     confirmButton.onclick = function () {
+//         modal.style.display = "none";
+//         deleteOrder(OrderId);
+//     };
 
-    cancelButton.onclick = function () {
-        modal.style.display = "none";
-    };
+//     cancelButton.onclick = function () {
+//         modal.style.display = "none";
+//     };
 
-    modal.style.display = "block";
-}
+//     modal.style.display = "block";
+// }
 
-function deleteOrder(OrderId) {
-    fetch(`http://localhost:8080/api/orders/${OrderId}`, {
-        method: "DELETE",
-    }).then((response) => {
-        if (response.status === 204) {
-            updateOrderTable();
-        }
-    });
-}
+// function deleteOrder(OrderId) {
+//     fetch(`http://localhost:8080/api/orders/${OrderId}`, {
+//         method: "DELETE",
+//     }).then((response) => {
+//         if (response.status === 204) {
+//             updateOrderTable();
+//         }
+//     });
+// }
 
-updateOrderTable();
+// updateOrderTable();
 
 
 //===USERS===
@@ -118,7 +118,7 @@ function updateUsers() {
     fetchAPI("users", data => {
         const tableBody = document.querySelector("#userTable tbody");
 
-        const filteredData = filterByStatus(data, userStatus);
+        const filteredData = filterByStatus(data, userStatus, "role");
 
         tableBody.innerHTML = "";
         let i = 0;
@@ -240,11 +240,13 @@ async function uploadFile() {
 }
 
 function updateProducts() {
+    const productStatus = document.getElementById("productStatus").value;
     fetchAPI("board-games", data => {
+        const filteredData = filterByStatus(data, productStatus, "category");
         const tableBody = document.querySelector("#productTable tbody");
         tableBody.innerHTML = "";
         let i = 0;
-        data.forEach((product) => {
+        filteredData.forEach((product) => {
             const row = document.createElement("tr");
             fetchAPI(`stocks/by-board-game/${product.id}`, stockDataArray => {
                 const totalQuantity = stockDataArray.reduce((total, stockData) => {
@@ -255,7 +257,7 @@ function updateProducts() {
                   <td>${i}</td>
                   <td>${product.title}</td>
                   <td>${product.price}</td>
-                  <td>${totalQuantity}</td>
+                  <td>${product.category}</td>
                   <td>
                       <button class="btn btn-outline-light" type="button" data-bs-toggle="modal" data-bs-target="#editProductModal" data-bs-whatever="@getbootstrap" onclick="showEditProductModal(${product.id})">Редактировать</button>
                       <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteProductModal" onclick="showDeleteProductModal(${product.id})">Удалить</button>
@@ -266,6 +268,12 @@ function updateProducts() {
         });
     });
 }
+
+const productStatusSelect = document.getElementById("productStatus");
+
+productStatusSelect.addEventListener("change", () => {
+    updateProducts();
+});
 
 function showEditProductModal(productId) {
     const modal = document.getElementById("editProductModal");

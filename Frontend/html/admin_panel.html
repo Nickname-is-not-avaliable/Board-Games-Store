@@ -40,7 +40,7 @@
 
 <main>
 <!--  ===ORDERS===  -->
-    <h1 class="text-light">Заказы и предзаказы</h1>
+    <!-- <h1 class="text-light">Заказы и предзаказы</h1>
     <label class="text-light">Статус:</label>
     <select id="orderStatus" class="form-select bg-dark text-light userTable" aria-label="Default select example">
         <option value="OPENED">Активные</option>
@@ -130,7 +130,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <!--  ===USERS===  -->
 
@@ -139,6 +139,8 @@
     <label class="text-light">Статус:</label>
     <select id="userStatus" class="form-select bg-dark text-light userTable" aria-label="Default select example">
         <option value="ALL">Все</option>
+        <option value="ADMIN">Администраторы</option>
+        <option value="USER">Пользователи</option>
         <option value="Вот тебе и кали-юга">Скрыть всех пользователей</option>
     </select>
     <table id="userTable" class="table table-dark table-hover userTable">
@@ -228,14 +230,35 @@
 
 <!--  ===PRODUCTS===  -->
 
-    <h1 class="text-light">Товары</h1>
+    <h1 class="text-light">Игры</h1>
+    <label class="text-light">Категория:</label>
     <table id="productTable" class="table table-dark table-hover userTable">
+        <select id="productStatus" class="form-select bg-dark text-light userTable" aria-label="Default select example">
+            <option value="ALL">Все</option>
+            <option value="Стратегия">Стратегия</option>
+            <option value="Приключенческая">Приключенческая</option>
+            <option value="Карточная">Карточная</option>
+            <option value="Семейная">Семейная</option>
+            <option value="Экономическая">Экономическая</option>
+            <option value="Для одного">Для одного</option>
+            <option value="Детективная">Детективная</option>
+            <option value="Детская">Детская</option>
+            <option value="Классическая">Классическая</option>
+            <option value="Для вечеринки">Для вечеринки</option>
+            <option value="Коопераривная">Коопераривная</option>
+            <option value="Полукооперативная">Полукооперативная</option>
+            <option value="Квест">Квест</option>
+            <option value="Дуэль">Дуэль</option>
+            <option value="На логику">На логику</option>
+            <option value="Другое">Другое</option>
+            <option value="Вот тебе и кали-юга">Скрыть все игры</option>
+        </select>
         <thead>
         <tr>
             <th>№</th>
             <th>Название товара</th>
             <th>Цена</th>
-            <th>Количество</th>
+            <th>Категория</th>
             <th>Действия</th>
         </tr>
         </thead>
