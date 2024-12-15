@@ -157,6 +157,8 @@ if (!productId && !productCategory && !popular && !best) {
     updateProducts(`board-games/search?searchString=${productId}`);
 } else if (Boolean(productCategory)) {
     updateProducts(`board-games/by-category/${productCategory}`);
+} else if (Boolean(best)) {
+    updateProducts(`orders/sorted-by-best-games`);
 } else {
     console.error('Invalid parameters');
 }

@@ -73,30 +73,31 @@ public class BoardGameController {
     @GetMapping("/sorted-by-category")
     public ResponseEntity<List<BoardGameDTO>> getBoardGamesSortedByCategoryRating() {
         List<BoardGame> allGames = boardGameService.getAllBoardGames();
+    
         allGames.forEach(game ->
                 categoryRatings.computeIfAbsent(game.getCategory(), k -> new CategoryData()));
-
-        List<String> sortedCategories = categoryRatings.entrySet().stream()
-                .sorted((entry1, entry2) -> entry2.getValue().getRating().compareTo(entry1.getValue().getRating()))
-                .map(Map.Entry::getKey)
+    
+        List<BoardGameDTO> sortedGames = allGames.stream()
+                .sorted((game1, game2) -> {
+                    int categoryRating1 = categoryRatings.get(game1.getCategory()).getRating();
+                    int categoryRating2 = categoryRatings.get(game2.getCategory()).getRating();
+    
+                    int gameRating1 = categoryRatings.get(game1.getCategory()).getGameCount(game1.getId());
+                    int gameRating2 = categoryRatings.get(game2.getCategory()).getGameCount(game2.getId());
+    
+                    int totalRating1 = categoryRating1 + gameRating1;
+                    int totalRating2 = categoryRating2 + gameRating2;
+    
+                    return Integer.compare(totalRating2, totalRating1);
+                })
+                .map(this::convertToDTO)
                 .collect(Collectors.toList());
-
-        List<BoardGameDTO> sortedGames = new ArrayList<>();
-        for (String category : sortedCategories) {
-            List<BoardGame> categoryGames = allGames.stream()
-                    .filter(game -> category.equals(game.getCategory()))
-                    .sorted((game1, game2) -> {
-                        int count1 = categoryRatings.get(category).getGameCount(game1.getId());
-                        int count2 = categoryRatings.get(category).getGameCount(game2.getId());
-                        return Integer.compare(count2, count1);
-                    })
-                    .toList();
-            sortedGames.addAll(categoryGames.stream().map(this::convertToDTO).toList());
-        }
-
-        logger.info("Games sorted by category and popularity: {}", sortedGames);
+    
+        logger.info("Games sorted by combined category and game rating: {}", sortedGames);
+    
         return ResponseEntity.ok(sortedGames);
     }
+    
 
     @PostMapping
     public ResponseEntity<BoardGameDTO> createBoardGame(@RequestBody BoardGameDTO boardGameDTO) {

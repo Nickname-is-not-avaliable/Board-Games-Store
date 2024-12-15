@@ -52,7 +52,7 @@ function updateOrderTable() {
         .then((response) => response.json())
         .then(
             (data) => {
-                const filteredData = filterByStatus(data, orderStatus);
+                const filteredData = filterByStatus(data, orderStatus,"status");
                 const tableBody = document.querySelector("#OrderTable tbody");
                 tableBody.innerHTML = "";
                 filteredData.forEach((order) => {

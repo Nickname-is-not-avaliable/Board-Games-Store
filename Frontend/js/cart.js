@@ -14,7 +14,7 @@ async function updateOrderTable() {
             throw new Error("Expected 'orders' to be an array but received: " + typeof orders);
         }
 
-        const filteredData = filterByStatus(orders, "CART");
+        const filteredData = filterByStatus(orders, "CART", "status");
         const tableBody = document.querySelector("#OrderTable tbody");
         tableBody.innerHTML = "";
 

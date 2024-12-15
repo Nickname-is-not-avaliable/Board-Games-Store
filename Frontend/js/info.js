@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const dailyOrders = {}; 
 
         fetchAPI("orders", data => {
-            const filteredData = filterByStatus(data, "CART");
+            const filteredData = filterByStatus(data, "CART", "status");
 
             totalOrders = filteredData.length;
             filteredData.forEach((filteredDatum) => {
