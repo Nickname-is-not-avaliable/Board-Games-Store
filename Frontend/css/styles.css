@@ -35,7 +35,7 @@ body {
 }
 
 main {
-    margin-left: 220px;
+    margin-left: 250px;
     margin-top: 60px;
 }
 
@@ -72,7 +72,7 @@ main {
 }
 
 .product-container {
-    margin-left: 220px;
+    margin-left: 250px;
     margin-top: 65px;
     display: flex;
     flex-wrap: wrap;
