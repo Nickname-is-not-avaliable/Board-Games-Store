@@ -26,25 +26,42 @@
     <aside class="sidebar">
         <ul>
             <h5 id="sidebar"></h5>
-            <h5><a href="catalog.html"
+            <h5>
+                <a href="catalog.html"
                    class="link-offset-2 link-light link-underline link-underline-opacity-0">Главная</a>
             </h5>
-            <h5><a href="catalog.html?popular=1"
+            <h5>
+                <a href="catalog.html?popular=1"
                    class="link-offset-2 link-light link-underline link-underline-opacity-0">Популярные</a>
             </h5>
-            <h5><a href="catalog.html?best=1"
+            <h5>
+                <a href="catalog.html?best=1"
                    class="link-offset-2 link-light link-underline link-underline-opacity-0">Лучшие</a>
             </h5>
 
-            <h5><a href="catalog.html?id=FAMILY"
-                   class="link-offset-2 link-light link-underline link-underline-opacity-0">Семейные</a>
+            <!-- Раскрывающийся список для категорий с индикатором -->
+            <h5>
+                <a href="#" class="link-offset-2 link-light link-underline link-underline-opacity-0 d-flex align-items-center" 
+                   onclick="toggleCategories(event)">
+                    Категории
+                    <span id="categoryIndicator" class="ms-2">&#9662;</span>
+                </a>
             </h5>
-            <h5><a href="catalog.html?id=DRAMA"
-                   class="link-offset-2 link-light link-underline link-underline-opacity-0">Драмы</a></h5>
-
-            <h5><a href="catalog.html?id=FIGHTING"
-                   class="link-offset-2 link-light link-underline link-underline-opacity-0">Боевики</a>
-            </h5>
+            <ul id="categoryList" style="display: none; padding-left: 20px;">
+                <h5>
+                    <a href="catalog.html?category=Классическая"
+                       class="link-offset-2 link-light link-underline link-underline-opacity-0">Классические</a>
+                </h5>
+                <h5>
+                    <a href="catalog.html?category=Стратегия"
+                       class="link-offset-2 link-light link-underline link-underline-opacity-0">Стратегии</a>
+                </h5>
+                <h5>
+                    <a href="catalog.html?category=Полукооперативная"
+                       class="link-offset-2 link-light link-underline link-underline-opacity-0">Полукооператив</a>
+                </h5>
+            </ul>
+            
             <h5 id="info"></h5>
         </ul>
     </aside>
@@ -87,5 +104,17 @@
         tag.href = `${href}`;
         tag.className = 'link-offset-2 link-light link-underline link-underline-opacity-0';
         divElement.appendChild(tag);
+    }
+
+    // Функция для показа/скрытия списка категорий с изменением индикатора
+    function toggleCategories(event) {
+        event.preventDefault();
+        const categoryList = document.getElementById("categoryList");
+        const indicator = document.getElementById("categoryIndicator");
+        const isHidden = categoryList.style.display === "none";
+
+        categoryList.style.display = isHidden ? "block" : "none";
+        // Меняем стрелку: вниз (▼) или вверх (▲)
+        indicator.innerHTML = isHidden ? "&#9652;" : "&#9662;";
     }
 </script>

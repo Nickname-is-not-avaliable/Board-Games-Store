@@ -182,10 +182,19 @@ const currentURL = window.location.href;
 const urlObject = new URL(currentURL);
 const productId = urlObject.searchParams.get("id");
 const productCategory = urlObject.searchParams.get("category");
-if (!productId && !productCategory) {
-    updateProducts('board-games');
-} else if (productId) {
-    updateProducts(`board-games/search?searchString=${productId}`);
-} else {
-    updateProducts(`board-games/by-category/${productCategory}`);
+switch (true) {
+    case !productId && !productCategory:
+        updateProducts('board-games');
+        break;
+
+    case Boolean(productId):
+        updateProducts(`board-games/search?searchString=${productId}`);
+        break;
+
+    case Boolean(productCategory):
+        updateProducts(`board-games/by-category/${productCategory}`);
+        break;
+
+    default:
+        console.error('Invalid parameters');
 }
