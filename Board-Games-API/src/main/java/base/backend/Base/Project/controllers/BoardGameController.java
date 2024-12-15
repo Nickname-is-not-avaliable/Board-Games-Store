@@ -22,7 +22,7 @@ public class BoardGameController {
     private static final Logger logger = LoggerFactory.getLogger(BoardGameController.class);
 
     private final BoardGameService boardGameService;
-    private final Map<String, Integer> categoryRatings = new HashMap<>();
+    private final Map<String, CategoryData> categoryRatings = new HashMap<>();
 
     @Autowired
     public BoardGameController(BoardGameService boardGameService) {
@@ -44,8 +44,13 @@ public class BoardGameController {
 
         optionalBoardGame.ifPresent(boardGame -> {
             String category = boardGame.getCategory();
-            categoryRatings.merge(category, 1, Integer::sum);
-            logger.info("Category '{}' accessed via ID {}. New rating: {}", category, id, categoryRatings.get(category));
+            categoryRatings.computeIfAbsent(category, k -> new CategoryData());
+
+            categoryRatings.get(category).incrementCategoryRating();
+            categoryRatings.get(category).incrementGameCount(id);
+
+            logger.info("Category '{}' accessed for game ID '{}'. New category rating: {}, game count: {}",
+                    category, id, categoryRatings.get(category).getRating(), categoryRatings.get(category).getGameCount(id));
         });
 
         return optionalBoardGame
@@ -55,8 +60,8 @@ public class BoardGameController {
 
     @GetMapping("/by-category/{category}")
     public ResponseEntity<List<BoardGameDTO>> getBoardGamesByCategory(@PathVariable String category) {
-        categoryRatings.merge(category, 1, Integer::sum);
-        logger.info("Category '{}' accessed. New rating: {}", category, categoryRatings.get(category));
+        categoryRatings.computeIfAbsent(category, k -> new CategoryData()).incrementCategoryRating();
+        logger.info("Category '{}' accessed. New rating: {}", category, categoryRatings.get(category).getRating());
 
         List<BoardGame> boardGames = boardGameService.getBoardGamesByCategory(category);
         List<BoardGameDTO> boardGameDTOs = boardGames.stream()
@@ -67,19 +72,29 @@ public class BoardGameController {
 
     @GetMapping("/sorted-by-category")
     public ResponseEntity<List<BoardGameDTO>> getBoardGamesSortedByCategoryRating() {
+        List<BoardGame> allGames = boardGameService.getAllBoardGames();
+        allGames.forEach(game ->
+                categoryRatings.computeIfAbsent(game.getCategory(), k -> new CategoryData()));
+
         List<String> sortedCategories = categoryRatings.entrySet().stream()
-                .sorted((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()))
+                .sorted((entry1, entry2) -> entry2.getValue().getRating().compareTo(entry1.getValue().getRating()))
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
 
-        logger.info("Categories sorted by rating: {}", sortedCategories);
+        List<BoardGameDTO> sortedGames = new ArrayList<>();
+        for (String category : sortedCategories) {
+            List<BoardGame> categoryGames = allGames.stream()
+                    .filter(game -> category.equals(game.getCategory()))
+                    .sorted((game1, game2) -> {
+                        int count1 = categoryRatings.get(category).getGameCount(game1.getId());
+                        int count2 = categoryRatings.get(category).getGameCount(game2.getId());
+                        return Integer.compare(count2, count1);
+                    })
+                    .toList();
+            sortedGames.addAll(categoryGames.stream().map(this::convertToDTO).toList());
+        }
 
-        List<BoardGame> allGames = boardGameService.getAllBoardGames();
-        List<BoardGameDTO> sortedGames = allGames.stream()
-                .sorted(Comparator.comparingInt(game -> sortedCategories.indexOf(game.getCategory())))
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-
+        logger.info("Games sorted by category and popularity: {}", sortedGames);
         return ResponseEntity.ok(sortedGames);
     }
 
@@ -116,5 +131,26 @@ public class BoardGameController {
 
     private BoardGameDTO convertToDTO(BoardGame boardGame) {
         return new BoardGameDTO(boardGame);
+    }
+
+    private static class CategoryData {
+        private int rating;
+        private final Map<Integer, Integer> gameCounts = new HashMap<>();
+
+        public void incrementCategoryRating() {
+            rating++;
+        }
+
+        public void incrementGameCount(Integer gameId) {
+            gameCounts.merge(gameId, 1, Integer::sum);
+        }
+
+        public int getGameCount(Integer gameId) {
+            return gameCounts.getOrDefault(gameId, 0);
+        }
+
+        public Integer getRating() {
+            return rating;
+        }
     }
 }
